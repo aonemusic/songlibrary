@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MelodyStream Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <link rel="icon" type="logo/jpg" href="logo.jpg"> 
+    
+    <style>
+        /* CSS from style.css */
+        
+        /* Custom Fonts and Reset */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        :root {
+            --primary-color: #1DB954; /* Spotify Green */
+            --background-color: #121212; /* Dark background */
+            --card-color: #181818;
+            --text-color: #FFFFFF;
+            --secondary-text-color: #B3B3B3;
+            --hover-color: #282828;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* --- Header & Logo --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            background-color: var(--card-color);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            color: var(--primary-color);
+            font-size: 2em;
+            margin-right: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        /* --- Search Bar --- */
+        .search-container {
+            position: relative;
+            width: 300px;
+        }
+
+        #search-bar {
+            width: 100%;
+            padding: 10px 40px 10px 15px;
+            border: none;
+            border-radius: 50px;
+            background-color: var(--hover-color);
+            color: var(--text-color);
+            font-size: 1em;
+            outline: none;
+            transition: background-color 0.3s;
+        }
+
+        #search-bar::placeholder {
+            color: var(--secondary-text-color);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--secondary-text-color);
+        }
+
+        /* --- Main Layout --- */
+        .container {
+            display: flex;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* --- Song List --- */
+        .song-list-container {
+            flex: 1;
+            background-color: var(--card-color);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .song-list-container h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-bottom: 2px solid var(--hover-color);
+            padding-bottom: 10px;
+        }
+
+        .song-list {
+            list-style: none;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding-right: 5px; /* Space for scrollbar */
+        }
+
+        /* Scrollbar Style */
+        .song-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        .song-list::-webkit-scrollbar-thumb {
+            background-color: var(--primary-color);
+            border-radius: 10px;
+        }
+        .song-list::-webkit-scrollbar-track {
+            background: var(--hover-color);
+            border-radius: 10px;
+        }
+
+
+        .song-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .song-item:hover {
+            background-color: var(--hover-color);
+        }
+
+        .song-item.active {
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            font-weight: 600;
+        }
+        .song-item.active .song-info span {
+            color: var(--background-color);
+        }
+
+
+        .song-cover-small {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 15px;
+        }
+
+        .song-info {
+            flex-grow: 1;
+        }
+
+        .song-info strong {
+            display: block;
+            font-size: 1.1em;
+        }
+
+        .song-info span {
+            color: var(--secondary-text-color);
+            font-size: 0.85em;
+        }
+
+        .play-icon {
+            font-size: 1.2em;
+            color: var(--primary-color);
+        }
+        .song-item.active .play-icon {
+            color: var(--background-color);
+        }
+
+        /* --- Current Player --- */
+        .current-player-container {
+            width: 350px;
+            flex-shrink: 0;
+        }
+
+        .player-card {
+            background-color: var(--card-color);
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            position: sticky;
+            top: 20px; /* Stick it to the top */
+        }
+
+        .player-cover {
+            width: 100%;
+            max-width: 250px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+            object-fit: cover;
+        }
+
+        /* New CSS for Animation */
+        @keyframes spin {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .player-cover.animate {
+            border-radius: 50%; /* Make it circular for a record/CD look */
+            animation: spin 10s linear infinite;
+        }
+        /* End New CSS for Animation */
+
+        .player-title {
+            font-size: 1.4em;
+            margin-bottom: 25px;
+            min-height: 40px;
+        }
+
+        /* Player Controls */
+        .controls button {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.8em;
+            margin: 0 10px;
+            cursor: pointer;
+            transition: color 0.2s, transform 0.1s;
+            padding: 5px;
+        }
+
+        #play-pause-btn {
+            font-size: 2.5em;
+            color: var(--primary-color);
+        }
+
+        .controls button:hover {
+            color: var(--primary-color);
+        }
+        .controls button:active {
+            transform: scale(0.95);
+        }
+
+        /* Progress Bar */
+        .progress-bar-container {
+            display: flex;
+            align-items: center;
+            margin-top: 30px;
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: var(--hover-color);
+            border-radius: 5px;
+            margin: 0 10px;
+            cursor: pointer;
+        }
+
+        .progress-bar::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 12px;
+            height: 12px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .time {
+            font-size: 0.9em;
+            color: var(--secondary-text-color);
+            width: 35px;
+            text-align: center;
+        }
+
+        /* Download Button */
+        .download-btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin-top: 25px;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        .download-btn:hover {
+            background-color: #1ed760; /* Slightly lighter green */
+        }
+
+        .download-btn i {
+            margin-right: 5px;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 800px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .current-player-container {
+                width: 100%;
+                order: -1; /* Move player above the list on mobile */
+            }
+
+            .header {
+                flex-direction: column;
+                padding: 15px;
+            }
+
+            .logo {
+                margin-bottom: 15px;
+            }
+            .search-container {
+                width: 100%;
+            }
+            .player-cover.animate {
+                animation: spin 6s linear infinite; /* Faster spin on mobile */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="logo">
+            <i class="fas fa-headphones-alt"></i>
+            <h1>MelodyStream</h1>
+        </div>
+        <div class="search-container">
+            <input type="text" id="search-bar" placeholder="Search songs..." onkeyup="filterSongs()">
+            <i class="fas fa-search search-icon"></i>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="song-list-container">
+            <h2>Track List</h2>
+            <ul id="song-list" class="song-list">
+                </ul>
+        </section>
+
+        <section class="current-player-container">
+            <div class="player-card">
+                <img id="player-cover" src="assets/covers/default.jpg" alt="Song Cover" class="player-cover">
+                <h3 id="player-title" class="player-title">Select a song to play...</h3>
+                
+                <div class="controls">
+                    <button id="prev-btn" title="Previous"><i class="fas fa-backward"></i></button>
+                    <button id="play-pause-btn" title="Play/Pause"><i class="fas fa-play"></i></button>
+                    <button id="next-btn" title="Next"><i class="fas fa-forward"></i></button>
+                </div>
+                
+                <div class="progress-bar-container">
+                    <span id="current-time" class="time">0:00</span>
+                    <input type="range" id="progress-bar" min="0" max="100" value="0" class="progress-bar">
+                    <span id="duration" class="time">0:00</span>
+                </div>
+
+                <audio id="audio-element"></audio>
+
+                <a id="download-link" href="#" download class="download-btn" title="Download Song">
+                    <i class="fas fa-download"></i> Download
+                </a>
+
+            </div>
+        </section>
+    </main>
+
+    <script>
+        /* JavaScript for Player Functionality and Notification Update */
+
+        /* SONG LIST (Updated with common asset paths) */
+        const songs = [
+            // IMPORTANT: Paths must be correct relative to where you save this HTML file
+            { title: "Ilakozhiye", coverFile: "Ilakozhiye.jpg", audioFile: "Ilakozhiye.mp3" },
+            { title: "Nera", coverFile: "assets/covers/nera.jpg", audioFile: "assets/audio/Nera.mp3" },
+            { title: "Shariya", coverFile: "assets/covers/shariya.jpg", audioFile: "assets/audio/Shariya.mp3" },
+            { title: "Hope Song", coverFile: "assets/covers/hope.jpg", audioFile: "assets/audio/hope_song.mp3" },
+            { title: "Jaalakaari", coverFile: "assets/covers/jaalakaari.jpg", audioFile: "assets/audio/jaalakaari.mp3" },
+            { title: "Kaadhal Ponmaan", coverFile: "assets/covers/kaadhal_ponmaan.jpg", audioFile: "assets/audio/kaadhal_ponmaan.mp3" },
+            { title: "Kannukulla", coverFile: "assets/covers/kannukulla.jpg", audioFile: "assets/audio/kannukulla.mp3" },
+            { title: "Kozhipunk", coverFile: "assets/covers/kozhipunk.jpg", audioFile: "assets/audio/kozhipunk.mp3" },
+            { title: "Singari", coverFile: "assets/covers/singari.jpg", audioFile: "assets/audio/singari.mp3" },
+            { title: "Thani Lokah Murakkaari", coverFile: "assets/covers/thani-lokah-murakkaari.jpg", audioFile: "assets/audio/thani-lokah-murakkaari.mp3" },
+            { title: "Oorum Blood", coverFile: "assets/covers/oorum-blood.jpg", audioFile: "assets/audio/oorum-blood.m4a" },
+            { title: "Munthirichar", coverFile: "assets/covers/mhr.jpg", audioFile: "assets/audio/mhr_munthirichar.mp3" }
+        ];
+
+        /* DOM Elements */
+        const songListEl = document.getElementById('song-list');
+        const audio = document.getElementById('audio-element');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationEl = document.getElementById('duration');
+        const playerTitleEl = document.getElementById('player-title');
+        const playerCoverEl = document.getElementById('player-cover');
+        const downloadLink = document.getElementById('download-link');
+
+        /* State Variables */
+        let currentSongIndex = -1; // -1 means no song is currently loaded
+        let isPlaying = false;
+        let notificationInstance = null; // To store the current notification object
+        let notificationIntervalId = null; 
+
+        /* --- Utility Functions --- */
+
+        // Format time in seconds to mm:ss format
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+            return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+        }
+
+        /* --- Notification Functions (Updated) --- */
+
+        // Request permission to send notifications
+        function requestNotificationPermission() {
+            if (!("Notification" in window)) {
+                console.log("This browser does not support desktop notification");
+                return;
+            }
+            if (Notification.permission === "default") {
+                Notification.requestPermission();
+            }
+        }
+
+        // Close and clear the current notification
+        function closeNotification() {
+            if (notificationInstance) {
+                notificationInstance.close();
+                notificationInstance = null;
+            }
+            if (notificationIntervalId) {
+                clearInterval(notificationIntervalId);
+                notificationIntervalId = null;
+            }
+        }
+
+        // Create/Update the persistent notification
+        function updatePlaybackNotification(song) {
+            // Only proceed if permission is granted
+            if (Notification.permission !== "granted") {
+                return; 
+            }
+
+            const updateNotification = () => {
+                const currentTime = formatTime(audio.currentTime);
+                const duration = formatTime(audio.duration || 0);
+                
+                // This is the main title of the notification (Song Name + Status)
+                const titleText = isPlaying ? `▶ Playing: ${song.title}` : `⏸ Paused: ${song.title}`;
+
+                const options = {
+                    // Song time in the main body
+                    body: `Time: ${currentTime} / ${duration}`, 
+                    // Use the song cover as the icon
+                    icon: song.coverFile, 
+                    tag: 'music-player-playback', 
+                    // Add Action Buttons (Previous and Next)
+                    actions: [
+                        {
+                            action: 'prev',
+                            title: 'Previous',
+                            icon: 'assets/icons/prev_icon.png' // **UPDATE PATH TO YOUR ICON**
+                        },
+                        {
+                            action: 'next',
+                            title: 'Next Song',
+                            icon: 'assets/icons/next_icon.png' // **UPDATE PATH TO YOUR ICON**
+                        }
+                    ],
+                };
+                
+                // Close the old notification before creating a new one
+                closeNotification(); 
+
+                notificationInstance = new Notification(titleText, options);
+
+                // --- Handling Button Clicks via 'action' ---
+                notificationInstance.onactionclick = function(event) {
+                    if (event.action === 'next') {
+                        playNext();
+                    } else if (event.action === 'prev') {
+                        playPrev();
+                    }
+                    // Optional: Focus the window when an action is taken
+                    window.focus(); 
+                };
+
+                // Add a click listener for the main body
+                notificationInstance.onclick = function(event) {
+                    event.preventDefault(); 
+                    window.focus(); 
+                };
+            };
+            
+            // Initial update
+            updateNotification();
+
+            // Set up interval to update the time display in the notification
+            if (isPlaying && !notificationIntervalId) {
+                notificationIntervalId = setInterval(updateNotification, 5000); // Update every 5 seconds
+            }
+            if (!isPlaying && notificationIntervalId) {
+                clearInterval(notificationIntervalId); // Stop interval if paused
+                notificationIntervalId = null;
+                updateNotification(); // One final update to show 'Paused' status
+            }
+        }
+
+
+        /* --- Main Player Functions --- */
+
+        // Loads the specified song into the player
+        function loadSong(index) {
+            if (index < 0 || index >= songs.length) return; // Safety check
+
+            currentSongIndex = index;
+            const song = songs[currentSongIndex];
+
+            audio.src = song.audioFile;
+            playerTitleEl.textContent = song.title;
+            playerCoverEl.src = song.coverFile;
+            
+            // Update Download Link
+            downloadLink.href = song.audioFile;
+            const fileExtension = song.audioFile.split('.').pop(); 
+            downloadLink.setAttribute('download', `${song.title}.${fileExtension}`); 
+
+            // Update active state in song list UI
+            updateSongListUI(currentSongIndex);
+            
+            // Close old notification when loading a new song
+            closeNotification(); 
+        }
+
+        // Toggles the play/pause state
+        function togglePlay() {
+            if (currentSongIndex === -1) {
+                // If no song is loaded, load the first one and play
+                loadSong(0);
+                playSong();
+                return;
+            }
+            
+            if (isPlaying) {
+                audio.pause();
+            } else {
+                audio.play();
+            }
+        }
+
+        // Forces the song to play
+        function playSong() {
+            // Need to wrap in a promise catch for autoplay limitations
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.error("Autoplay prevented:", error);
+                    // User might need to click the main play button first.
+                });
+            }
+        }
+
+        // Forces the song to pause
+        function pauseSong() {
+            audio.pause();
+        }
+
+        // Play the next song in the list
+        function playNext() {
+            const nextIndex = (currentSongIndex + 1) % songs.length;
+            loadSong(nextIndex);
+            playSong();
+        }
+
+        // Play the previous song in the list
+        function playPrev() {
+            // Loop back to the end if at the beginning
+            let prevIndex = currentSongIndex - 1;
+            if (prevIndex < 0) {
+                prevIndex = songs.length - 1;
+            }
+            loadSong(prevIndex);
+            playSong();
+        }
+
+        /* --- UI Functions --- */
+
+        // Populates the song list on the webpage
+        function renderSongList(songArray) {
+            songListEl.innerHTML = ''; // Clear existing list
+            
+            songArray.forEach((song) => {
+                // Find the original index for the click handler, even if the list is filtered
+                const originalIndex = songs.findIndex(s => s.title === song.title);
+
+                const listItem = document.createElement('li');
+                listItem.classList.add('song-item');
+                listItem.setAttribute('data-index', originalIndex);
+                listItem.innerHTML = `
+                    <img src="${song.coverFile}" alt="Cover" class="song-cover-small">
+                    <div class="song-info">
+                        <strong>${song.title}</strong>
+                        <span>Click to Play</span>
+                    </div>
+                    <i class="fas fa-play play-icon"></i>
+                `;
+                
+                listItem.addEventListener('click', () => {
+                    const clickedIndex = parseInt(listItem.getAttribute('data-index'));
+                    if (clickedIndex === currentSongIndex && isPlaying) {
+                        pauseSong();
+                    } else if (clickedIndex === currentSongIndex && !isPlaying) {
+                        playSong();
+                    } else {
+                        loadSong(clickedIndex);
+                        playSong();
+                    }
+                });
+
+                songListEl.appendChild(listItem);
+            });
+
+            // Re-apply active state after rendering
+            if (currentSongIndex !== -1) {
+                updateSongListUI(currentSongIndex);
+            }
+        }
+
+        // Updates the 'active' class on song list items
+        function updateSongListUI(activeIndex) {
+            document.querySelectorAll('.song-item').forEach((item) => {
+                const itemIndex = parseInt(item.getAttribute('data-index'));
+                const playIcon = item.querySelector('.play-icon');
+
+                item.classList.remove('active');
+                if (playIcon) {
+                    playIcon.className = 'fas fa-play play-icon'; // Default to Play icon
+                }
+
+                if (itemIndex === activeIndex) {
+                    item.classList.add('active');
+                    if (playIcon) {
+                         playIcon.className = isPlaying ? 'fas fa-pause play-icon' : 'fas fa-play play-icon';
+                    }
+                }
+            });
+        }
+
+        // Handles the song searching/filtering
+        function filterSongs() {
+            const searchTerm = document.getElementById('search-bar').value.toLowerCase();
+            
+            const filteredSongs = songs.filter(song => 
+                song.title.toLowerCase().includes(searchTerm)
+            );
+
+            renderSongList(filteredSongs);
+        }
+
+        /* --- Animation Toggle Function --- */
+        function toggleAnimation(is_playing) {
+            if (is_playing) {
+                playerCoverEl.classList.add('animate');
+            } else {
+                playerCoverEl.classList.remove('animate');
+            }
+        }
+
+
+        /* --- Event Listeners --- */
+
+        // Player Controls
+        playPauseBtn.addEventListener('click', togglePlay);
+        nextBtn.addEventListener('click', playNext);
+        prevBtn.addEventListener('click', playPrev);
+
+        // Audio Events
+        audio.addEventListener('loadedmetadata', () => {
+            progressBar.max = audio.duration;
+            durationEl.textContent = formatTime(audio.duration);
+            if (currentSongIndex !== -1) {
+                 updatePlaybackNotification(songs[currentSongIndex]);
+            }
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            progressBar.value = audio.currentTime;
+            currentTimeEl.textContent = formatTime(audio.currentTime);
+        });
+
+        audio.addEventListener('ended', () => {
+            closeNotification(); 
+            playNext(); // Autoplay next song
+        }); 
+
+        audio.addEventListener('play', () => {
+            isPlaying = true;
+            playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            updateSongListUI(currentSongIndex);
+            toggleAnimation(true); // Start animation
+            
+            // Start/Update notification
+            if (currentSongIndex !== -1) {
+                updatePlaybackNotification(songs[currentSongIndex]);
+            }
+        });
+
+        audio.addEventListener('pause', () => {
+            isPlaying = false;
+            playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+            updateSongListUI(currentSongIndex);
+            toggleAnimation(false); // Stop animation
+            
+            // Update notification to show 'Paused' status
+            if (currentSongIndex !== -1) {
+                updatePlaybackNotification(songs[currentSongIndex]);
+            }
+        });
+
+        // Progress Bar interaction
+        progressBar.addEventListener('input', () => {
+            currentTimeEl.textContent = formatTime(progressBar.value);
+        });
+        progressBar.addEventListener('change', () => {
+            audio.currentTime = progressBar.value;
+        });
+
+
+        /* --- Initialization --- */
+        document.addEventListener('DOMContentLoaded', () => {
+            // 1. Render the full song list when the page loads
+            renderSongList(songs);
+            
+            // 2. Request Notification Permission
+            requestNotificationPermission();
+        });
+
+        // Ensure notification is closed if the browser tab is closed/page is left
+        window.addEventListener('beforeunload', closeNotification);
+    </script>
+</body>
+</html>
