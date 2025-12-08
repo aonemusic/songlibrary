@@ -23,12 +23,12 @@
             --secondary-text-color: #333333; 
             --status-color: #28a745; 
             
-            /* GLASSMORPHISM VARIABLES (SUBTLE VALUES) */
-            --glass-color: rgba(255, 255, 255, 0.15); /* സുതാര്യത കുറച്ചു (0.15) */
-            --glass-border: rgba(255, 255, 255, 0.2); /* ബോർഡറിന്റെ തെളിച്ചം കുറച്ചു (0.2) */
-            --glass-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); /* ഷാഡോ കുറച്ചു */
-            --blur-amount: 3px; /* മങ്ങൽ 3px ലേക്ക് കുറച്ചു */
-            --hover-glass-color: rgba(255, 255, 255, 0.2); 
+            /* GLASSMORPHISM VARIABLES (SUBTLE VALUES - INCREASED BLUR/OPACITY) */
+            --glass-color: rgba(255, 255, 255, 0.25); /* സുതാര്യത വർദ്ധിപ്പിച്ചു (0.25) */
+            --glass-border: rgba(255, 255, 255, 0.3); /* ബോർഡർ തെളിച്ചം വർദ്ധിപ്പിച്ചു (0.3) */
+            --glass-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* ഷാഡോ വർദ്ധിപ്പിച്ചു */
+            --blur-amount: 8px; /* മങ്ങൽ 8px ലേക്ക് വർദ്ധിപ്പിച്ചു (MORE BLUR) */
+            --hover-glass-color: rgba(255, 255, 255, 0.35); 
         }
         /* --------------------------------------------- */
         
@@ -109,6 +109,37 @@
             padding: 15px 30px;
             margin-bottom: 20px;
         }
+        
+        /* New: Header Actions Container */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* UPDATED: Songs List Button Style (Glassmorphism Model) */
+        .header-btn {
+            /* Use Glassmorphism Base Styles */
+            background: var(--glass-color); 
+            border: 1px solid var(--glass-border); 
+            box-shadow: var(--glass-shadow); 
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount)); 
+            
+            color: var(--primary-color); /* Primary color text */
+            padding: 10px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .header-btn:hover {
+            background-color: var(--hover-glass-color); /* Lighter hover effect */
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.4); /* Subtle glow on hover */
+        }
+        /* END UPDATED CSS */
 
         .logo {
             display: flex;
@@ -244,6 +275,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+            position: relative;
         }
 
         .song-item:hover {
@@ -262,17 +294,29 @@
         }
 
 
-        .song-cover-small {
+        .song-cover-small, .song-icon-placeholder {
             width: 40px;
             height: 40px;
-            object-fit: cover;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             border-radius: 4px;
             margin-right: 15px;
             box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            object-fit: cover;
+        }
+        
+        /* Song Icon Placeholder Style (If cover image is not loaded) */
+        .song-icon-placeholder {
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1.2em;
         }
 
         .song-info {
             flex-grow: 1;
+            margin-right: 10px; /* Space for controls */
         }
 
         .song-info strong {
@@ -284,13 +328,40 @@
             color: var(--secondary-text-color);
             font-size: 0.85em;
         }
+        
+        /* Play/Pause Icon Container */
+        .song-controls {
+            display: flex;
+            align-items: center;
+        }
 
         .play-icon {
             color: var(--primary-color); 
+            font-size: 1.2em;
+            transition: color 0.2s;
         }
         .song-item.active .play-icon {
             color: white; 
         }
+        
+        /* Download Icon in List */
+        .song-download-link {
+            text-decoration: none;
+            color: var(--secondary-text-color);
+            margin-left: 15px;
+            font-size: 1em;
+            transition: color 0.2s;
+            padding: 5px; /* Added for easy clicking */
+        }
+        
+        .song-download-link:hover {
+            color: var(--status-color); /* Green for download */
+        }
+        
+        .song-item.active .song-download-link {
+            color: white;
+        }
+        
 
         /* --- Current Player --- */
         .current-player-container {
@@ -417,10 +488,10 @@
             text-align: center;
         }
 
-        /* Download Button */
+        /* Download Button (Below Controls) */
         .download-btn {
             display: inline-block;
-            background-color: var(--primary-color); 
+            background-color: var(--status-color); /* Changed to status-color for visibility */
             color: white; 
             text-decoration: none;
             padding: 10px 20px;
@@ -428,13 +499,13 @@
             margin-top: 25px;
             font-weight: 600;
             transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4); 
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.4); 
         }
 
         .download-btn:hover {
-            background-color: #0056b3; 
+            background-color: #1e7e34; /* Darker green */
             transform: scale(1.05);
-            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.6);
+            box-shadow: 0 6px 15px rgba(40, 167, 69, 0.6);
         }
 
         .download-btn i {
@@ -460,8 +531,19 @@
             .logo {
                 margin-bottom: 15px;
             }
+            
+            .header-actions {
+                flex-direction: column;
+                width: 100%;
+                gap: 10px;
+            }
             .search-container {
                 width: 100%;
+                order: 2; /* Search bar last */
+            }
+            .header-btn {
+                width: 100%; /* Full width button on small screens */
+                order: 1;
             }
             .player-cover.animate {
                 animation: spin 6s linear infinite; 
@@ -478,14 +560,21 @@
             <h1>A One Music</h1>
             <h4 class="status-message">Sponsored by:- RISHAM004</h4>
         </div>
-        <div class="search-container">
-            <input type="text" id="search-bar" placeholder="Search tracks..." onkeyup="filterSongs()">
-            <i class="fas fa-search search-icon"></i>
+        
+        <div class="header-actions">
+            <button id="song-list-btn" class="header-btn" title="View all available tracks">
+                <i class="fas fa-list-ul"></i> Songs List
+            </button>
+            
+            <div class="search-container">
+                <input type="text" id="search-bar" placeholder="Search tracks..." onkeyup="filterSongs()">
+                <i class="fas fa-search search-icon"></i>
+            </div>
         </div>
     </header>
 
     <main class="container">
-        <section class="song-list-container">
+        <section id="song-list-section" class="song-list-container">
             <h2>Track List 💿</h2>
             
             <ul id="song-list" class="song-list">
@@ -511,8 +600,8 @@
 
                 <audio id="audio-element"></audio>
 
-                <a id="download-link" href="#" download class="download-btn" title="Download Song">
-                    <i class="fas fa-download"></i> Download
+                <a id="download-link" href="#" download class="download-btn" title="Download Current Song">
+                    <i class="fas fa-download"></i> Download Current Song
                 </a>
 
             </div>
@@ -550,6 +639,8 @@
         const playerTitleEl = document.getElementById('player-title');
         const playerCoverEl = document.getElementById('player-cover');
         const downloadLink = document.getElementById('download-link');
+        const songListSection = document.getElementById('song-list-section'); 
+        const songListBtn = document.getElementById('song-list-btn'); 
 
         /* State Variables */
         let currentSongIndex = -1; // -1 means no song is currently loaded
@@ -566,7 +657,7 @@
             return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
         }
 
-        /* --- Notification Functions (Requires icon files at specified paths if used) --- */
+        /* --- Notification Functions --- */
 
         function requestNotificationPermission() {
             if (!("Notification" in window)) {
@@ -588,6 +679,11 @@
                 notificationIntervalId = null;
             }
         }
+        
+        function getCoverUrl(filename) {
+             return filename;
+        }
+
 
         function updatePlaybackNotification(song) {
             if (Notification.permission !== "granted") {
@@ -600,29 +696,18 @@
                 
                 const titleText = isPlaying ? `▶ Playing: ${song.title}` : `⏸ Paused: ${song.title}`;
 
+                const iconPath = getCoverUrl(song.coverFile);
+                
                 const options = {
                     body: `Time: ${currentTime} / ${duration}`, 
-                    icon: song.coverFile, 
+                    icon: iconPath, 
                     tag: 'music-player-playback', 
-                    // Note: Actions won't work without service worker/dedicated icons
-                    // actions: [ 
-                    //     { action: 'prev', title: 'Previous', icon: 'assets/icons/prev_icon.png' }, 
-                    //     { action: 'next', title: 'Next Song', icon: 'assets/icons/next_icon.png' }
-                    // ],
+                    renotify: true, 
                 };
                 
                 closeNotification(); 
 
                 notificationInstance = new Notification(titleText, options);
-
-                notificationInstance.onactionclick = function(event) {
-                    if (event.action === 'next') {
-                        playNext();
-                    } else if (event.action === 'prev') {
-                        playPrev();
-                    }
-                    window.focus(); 
-                };
 
                 notificationInstance.onclick = function(event) {
                     event.preventDefault(); 
@@ -653,12 +738,17 @@
 
             audio.src = song.audioFile;
             playerTitleEl.textContent = song.title;
+            
             playerCoverEl.src = song.coverFile;
+            playerCoverEl.onerror = () => {
+                playerCoverEl.src = 'InShot_20251204_191559604.png'; 
+            };
             
             // Update Download Link
             downloadLink.href = song.audioFile;
             const fileExtension = song.audioFile.split('.').pop(); 
             downloadLink.setAttribute('download', `${song.title}.${fileExtension}`); 
+            downloadLink.style.display = 'inline-block'; 
 
             updateSongListUI(currentSongIndex);
             
@@ -667,8 +757,10 @@
 
         function togglePlay() {
             if (currentSongIndex === -1) {
-                loadSong(0);
-                playSong();
+                if (songs.length > 0) {
+                     loadSong(0);
+                     playSong();
+                }
                 return;
             }
             
@@ -688,17 +780,15 @@
             }
         }
 
-        function pauseSong() {
-            audio.pause();
-        }
-
         function playNext() {
+            if (songs.length === 0) return;
             const nextIndex = (currentSongIndex + 1) % songs.length;
             loadSong(nextIndex);
             playSong();
         }
 
         function playPrev() {
+            if (songs.length === 0) return;
             let prevIndex = currentSongIndex - 1;
             if (prevIndex < 0) {
                 prevIndex = songs.length - 1;
@@ -714,20 +804,57 @@
             
             songArray.forEach((song) => {
                 const originalIndex = songs.findIndex(s => s.title === song.title);
+                if (originalIndex === -1) return; 
 
                 const listItem = document.createElement('li');
                 listItem.classList.add('song-item');
                 listItem.setAttribute('data-index', originalIndex);
-                listItem.innerHTML = `
-                    <img src="${song.coverFile}" alt="Cover" class="song-cover-small">
-                    <div class="song-info">
-                        <strong>${song.title}</strong>
-                        <span>Click to Play</span>
-                    </div>
-                    <i class="fas fa-play play-icon"></i>
-                `;
                 
-                listItem.addEventListener('click', () => {
+                let coverElement;
+                if (song.coverFile) {
+                    coverElement = document.createElement('img');
+                    coverElement.src = song.coverFile;
+                    coverElement.alt = "Cover";
+                    coverElement.classList.add('song-cover-small');
+                    coverElement.onerror = function() {
+                        coverElement.replaceWith(createIconPlaceholder());
+                    };
+                } else {
+                    coverElement = createIconPlaceholder();
+                }
+
+                listItem.appendChild(coverElement);
+                
+                const songInfoDiv = document.createElement('div');
+                songInfoDiv.classList.add('song-info');
+                songInfoDiv.innerHTML = `<strong>${song.title}</strong><span>Click to Play</span>`;
+                listItem.appendChild(songInfoDiv);
+                
+                const controlsDiv = document.createElement('div');
+                controlsDiv.classList.add('song-controls');
+
+                const playIcon = document.createElement('i');
+                playIcon.classList.add('fas', 'fa-play', 'play-icon');
+                playIcon.setAttribute('title', 'Play');
+                controlsDiv.appendChild(playIcon);
+                
+                const downloadLinkItem = document.createElement('a');
+                downloadLinkItem.href = song.audioFile;
+                const fileExtension = song.audioFile.split('.').pop(); 
+                downloadLinkItem.setAttribute('download', `${song.title}.${fileExtension}`);
+                downloadLinkItem.classList.add('song-download-link');
+                downloadLinkItem.setAttribute('title', 'Download Track');
+                downloadLinkItem.innerHTML = '<i class="fas fa-download"></i>';
+                controlsDiv.appendChild(downloadLinkItem);
+                
+                listItem.appendChild(controlsDiv);
+
+
+                listItem.addEventListener('click', (event) => {
+                    if (event.target.closest('.song-download-link')) {
+                        return;
+                    }
+                    
                     const clickedIndex = parseInt(listItem.getAttribute('data-index'));
                     if (clickedIndex === currentSongIndex && isPlaying) {
                         pauseSong();
@@ -746,6 +873,14 @@
                 updateSongListUI(currentSongIndex);
             }
         }
+        
+        function createIconPlaceholder() {
+            const placeholder = document.createElement('div');
+            placeholder.classList.add('song-icon-placeholder');
+            placeholder.innerHTML = '<i class="fas fa-music"></i>';
+            return placeholder;
+        }
+
 
         function updateSongListUI(activeIndex) {
             document.querySelectorAll('.song-item').forEach((item) => {
@@ -755,19 +890,21 @@
                 item.classList.remove('active');
                 if (playIcon) {
                     playIcon.className = 'fas fa-play play-icon'; 
+                    playIcon.setAttribute('title', 'Play');
                 }
 
                 if (itemIndex === activeIndex) {
                     item.classList.add('active');
                     if (playIcon) {
                          playIcon.className = isPlaying ? 'fas fa-pause play-icon' : 'fas fa-play play-icon';
+                         playIcon.setAttribute('title', isPlaying ? 'Pause' : 'Play');
                     }
                 }
             });
             
             if (isPlaying) {
                 playPauseBtn.classList.add('playing');
-                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>'; // Ensure play/pause button matches state
+                playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
             } else {
                 playPauseBtn.classList.remove('playing');
                 playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
@@ -792,12 +929,20 @@
             }
         }
 
+        /* --- Scroll to Song List Function --- */
+        function scrollToSongList() {
+            songListSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
 
         /* --- Event Listeners --- */
 
         playPauseBtn.addEventListener('click', togglePlay);
         nextBtn.addEventListener('click', playNext);
         prevBtn.addEventListener('click', playPrev);
+        
+        // EVENT LISTENER FOR THE SONG LIST BUTTON
+        songListBtn.addEventListener('click', scrollToSongList); 
 
         audio.addEventListener('loadedmetadata', () => {
             progressBar.max = audio.duration;
@@ -848,7 +993,8 @@
         /* --- Initialization --- */
         document.addEventListener('DOMContentLoaded', () => {
             renderSongList(songs);
-            requestNotificationPermission();
+            requestNotificationPermission(); 
+            downloadLink.style.display = 'none'; // Hide download button initially
         });
 
         window.addEventListener('beforeunload', closeNotification);
