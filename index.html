@@ -86,25 +86,18 @@
             z-index: 1; 
         }
 
-        /* 3. Pseudo-element for the full-screen blur/glass layer (MODIFIED) */
-        body::before {
-            content: '';
-            position: fixed; 
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1; 
-            
-            /* The key Glass Layer */
-            background-color: rgba(255, 255, 255, 0.05); /* Overlay സുതാര്യത കുറച്ചു */
-            backdrop-filter: blur(3px); /* Blurs the background image (5px ൽ നിന്ന് 3px ലേക്ക് കുറച്ചു) */
-            -webkit-backdrop-filter: blur(3px);
-        }
-        /* --- END BACKGROUND FIX --- */
+        /* ---------------------------------------------------- */
+        /* REMOVED: The body::before full-screen blur for better performance. 
+           The blur is now handled only by the individual .glass-frame elements.
+        */
+        /* ---------------------------------------------------- */
         
         /* Global Glass Frame Styling Mixin */
-        .glass-frame {
+        .glass-frame, 
+        .header, 
+        .player-card, 
+        .song-list-container {
+            /* The Glassmorphism Effect applied to the container */
             background: var(--glass-color); 
             border: 1px solid var(--glass-border); 
             border-radius: 10px;
@@ -121,13 +114,7 @@
             align-items: center;
             padding: 15px 30px;
             margin-bottom: 20px;
-            /* Apply Glass Frame Style */
-            background: var(--glass-color); 
-            border: 1px solid var(--glass-border); 
-            border-radius: 10px;
-            box-shadow: var(--glass-shadow); 
-            backdrop-filter: blur(var(--blur-amount));
-            -webkit-backdrop-filter: blur(var(--blur-amount));
+            /* No need to repeat glass-frame styles here as they are in the combined selector above */
         }
 
         .logo {
@@ -225,12 +212,7 @@
         .song-list-container {
             flex: 1;
             padding: 20px;
-            background: var(--glass-color); 
-            border: 1px solid var(--glass-border); 
-            border-radius: 10px;
-            box-shadow: var(--glass-shadow); 
-            backdrop-filter: blur(var(--blur-amount));
-            -webkit-backdrop-filter: blur(var(--blur-amount));
+            /* No need to repeat glass-frame styles here as they are in the combined selector above */
         }
 
         .song-list-container h2 {
@@ -330,13 +312,7 @@
             position: sticky;
             top: 20px; 
             
-            /* Apply Glass Frame Style */
-            background: var(--glass-color); 
-            border: 1px solid var(--glass-border); 
-            border-radius: 10px;
-            box-shadow: var(--glass-shadow); 
-            backdrop-filter: blur(var(--blur-amount));
-            -webkit-backdrop-filter: blur(var(--blur-amount));
+            /* No need to repeat glass-frame styles here as they are in the combined selector above */
         }
 
         .player-cover {
