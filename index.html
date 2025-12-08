@@ -6,15 +6,13 @@
     <title>A One Music Player - song download for free</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
-    <link rel="icon" type="image/png" href="InShot_20251204_191559604.png"> 
-    
     <style>
-        /* CSS for Glassmorphism Style (Modified for stronger blur and glass hover) */
+        /* CSS for Style (Modified to remove Glassmorphism blur) */
         
         /* Custom Fonts and Reset */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         
-        /* --- GLASSMORHISM COLOR PALETTE & VARIABLES (MODIFIED) --- */
+        /* --- COLOR PALETTE & VARIABLES (MODIFIED) --- */
         :root {
             /* General Colors */
             --primary-color: #007bff; 
@@ -23,11 +21,11 @@
             --secondary-text-color: #333333; 
             --status-color: #28a745; 
             
-            /* GLASSMORPHISM VARIABLES (STRONGER BLUR) */
-            --glass-color: rgba(255, 255, 255, 0.20); /* Slightly more transparent */
+            /* GLASSMORPHISM VARIABLES (NOW JUST TRANSPARENT BACKGROUNDS) */
+            --glass-color: rgba(255, 255, 255, 0.20); /* Semi-transparent white */
             --glass-border: rgba(255, 255, 255, 0.4); /* Border slightly brighter */
             --glass-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow */
-            --blur-amount: 12px; /* INCREASED BLUR to 12px for more watery/blur look */
+            --blur-amount: 0px; /* SET TO ZERO / NO LONGER USED */
             --hover-glass-color: rgba(255, 255, 255, 0.45); /* Hover color */
             --active-glass-color: rgba(0, 123, 255, 0.35); /* Transparent blue for active state */
         }
@@ -71,13 +69,13 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* --- BACKGROUND FIX: Applied background color directly on body, removed image --- */
+        /* --- BACKGROUND FIX: Applied background image directly on body --- */
         body {
-            /* REMOVED: background-image: url('aonemusic-b.jpg'); */
-            background-color: var(--background-color); /* Added solid background color */
+            /* 1. Set the background image directly on the body */
+            background-image: url('aonemusic-b.jpg'); /* <-- CHANGE THIS PATH */
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; 
+            background-attachment: fixed; /* Ensures background image remains fixed while scrolling */
             
             /* 2. General body styles */
             color: var(--text-color);
@@ -99,9 +97,9 @@
             border: 1px solid var(--glass-border); 
             border-radius: 10px;
             box-shadow: var(--glass-shadow); 
-            /* Key for Glassmorphism: applies blur to content *behind* the element */
-            backdrop-filter: blur(var(--blur-amount)); /* <--- STRONGER BLUR APPLIED HERE */
-            -webkit-backdrop-filter: blur(var(--blur-amount)); 
+            /* REMOVED: Key for Glassmorphism: backdrop-filter: blur(...) */
+            backdrop-filter: none; 
+            -webkit-backdrop-filter: none; 
             transition: all 0.3s ease; 
         }
 
@@ -121,7 +119,7 @@
             gap: 15px;
         }
 
-        /* UPDATED: Songs List Button Style (Glassmorphism Model) */
+        /* UPDATED: Songs List Button Style (Transparent Model) */
         .header-btn {
             color: var(--primary-color); 
             padding: 10px 15px;
@@ -157,13 +155,13 @@
             text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
         }
         
-        /* Only the headphones icon remains centered */
         .logo-icon-container .fa-headphones {
             left: 0;
             top: 0;
+            /* Added a tiny offset to the headphones for better centering */
+            transform: translateY(-5px); 
         }
-        
-        /* REMOVED: .logo-icon-container .fa-music style rule */
+        /* REMOVED: CSS for .fa-music */
 
         .logo h1 {
             font-size: 1.8em;
@@ -195,7 +193,7 @@
             font-size: 1em;
             outline: none;
             transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
-            /* Remove blur from input itself to ensure clear typing */
+            /* Already removed here, but ensuring it's not accidentally re-applied */
             backdrop-filter: none; 
             -webkit-backdrop-filter: none;
         }
@@ -553,7 +551,8 @@
     <header class="header">
         <div class="logo">
             <div class="logo-icon-container">
-                <i class="fas fa-headphones"></i> </div>
+                <i class="fas fa-headphones"></i> 
+            </div>
             <h1>A One Music</h1>
             <h4 class="status-message">RISHAM004</h4>
         </div>
@@ -733,7 +732,8 @@
             
             playerCoverEl.src = song.coverFile;
             playerCoverEl.onerror = () => {
-                playerCoverEl.src = 'InShot_20251204_191559604.png'; 
+                // MODIFIED: Fallback to the default songlogo.jpg instead of the removed file
+                playerCoverEl.src = 'songlogo.jpg'; 
             };
             
             downloadLink.href = song.audioFile;
@@ -875,7 +875,7 @@
         function createIconPlaceholder() {
             const placeholder = document.createElement('div');
             placeholder.classList.add('song-icon-placeholder');
-            placeholder.innerHTML = '<i class="fas fa-music"></i>';
+            placeholder.innerHTML = '<i class="fas fa-headphones"></i>';
             return placeholder;
         }
 
