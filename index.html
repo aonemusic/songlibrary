@@ -9,12 +9,12 @@
     <link rel="icon" type="image/png" href="InShot_20251204_191559604.png"> 
     
     <style>
-        /* CSS for Glassmorphism Style (Modified for subtle effect) */
+        /* CSS for Glassmorphism Style (Modified for stronger blur and glass hover) */
         
         /* Custom Fonts and Reset */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         
-        /* --- GLASSMORHISM COLOR PALETTE & VARIABLES (SUBTLE EFFECT) --- */
+        /* --- GLASSMORHISM COLOR PALETTE & VARIABLES (MODIFIED) --- */
         :root {
             /* General Colors */
             --primary-color: #007bff; 
@@ -23,12 +23,13 @@
             --secondary-text-color: #333333; 
             --status-color: #28a745; 
             
-            /* GLASSMORPHISM VARIABLES (SUBTLE VALUES - INCREASED BLUR/OPACITY) */
-            --glass-color: rgba(255, 255, 255, 0.25); /* സുതാര്യത വർദ്ധിപ്പിച്ചു (0.25) */
-            --glass-border: rgba(255, 255, 255, 0.3); /* ബോർഡർ തെളിച്ചം വർദ്ധിപ്പിച്ചു (0.3) */
-            --glass-shadow: 0 6px 20px rgba(0, 0, 0, 0.1); /* ഷാഡോ വർദ്ധിപ്പിച്ചു */
-            --blur-amount: 8px; /* മങ്ങൽ 8px ലേക്ക് വർദ്ധിപ്പിച്ചു (MORE BLUR) */
-            --hover-glass-color: rgba(255, 255, 255, 0.35); 
+            /* GLASSMORPHISM VARIABLES (STRONGER BLUR) */
+            --glass-color: rgba(255, 255, 255, 0.20); /* Slightly more transparent */
+            --glass-border: rgba(255, 255, 255, 0.4); /* Border slightly brighter */
+            --glass-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow */
+            --blur-amount: 12px; /* INCREASED BLUR to 12px */
+            --hover-glass-color: rgba(255, 255, 255, 0.45); /* Hover color */
+            --active-glass-color: rgba(0, 123, 255, 0.35); /* Transparent blue for active state */
         }
         /* --------------------------------------------- */
         
@@ -139,7 +140,6 @@
             transform: scale(1.05);
             box-shadow: 0 0 10px rgba(0, 123, 255, 0.4); /* Subtle glow on hover */
         }
-        /* END UPDATED CSS */
 
         .logo {
             display: flex;
@@ -278,19 +278,29 @@
             position: relative;
         }
 
+        /* MODIFIED: Apply glass hover effect */
         .song-item:hover {
             background-color: var(--hover-glass-color); 
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
         }
 
+        /* MODIFIED: Apply glass active effect */
         .song-item.active {
-            background-color: var(--primary-color); 
-            color: white; 
+            background-color: var(--active-glass-color); /* Use transparent blue glass */
+            color: var(--text-color); /* Keep text dark/readable */
             font-weight: 600;
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.6); 
+            border: 1px solid var(--primary-color); /* Add a subtle border */
+            box-shadow: 0 0 15px var(--primary-color); 
         }
-        .song-item.active .song-info span {
-            color: white;
+        /* MODIFIED: Adjust colors for active state */
+        .song-item.active .song-info strong,
+        .song-item.active .song-info span,
+        .song-item.active .play-icon,
+        .song-item.active .song-download-link {
+            color: var(--text-color); 
+        }
+        .song-item.active .play-icon {
+            color: var(--primary-color); 
         }
 
 
@@ -316,7 +326,7 @@
 
         .song-info {
             flex-grow: 1;
-            margin-right: 10px; /* Space for controls */
+            margin-right: 10px; 
         }
 
         .song-info strong {
@@ -340,9 +350,6 @@
             font-size: 1.2em;
             transition: color 0.2s;
         }
-        .song-item.active .play-icon {
-            color: white; 
-        }
         
         /* Download Icon in List */
         .song-download-link {
@@ -351,15 +358,11 @@
             margin-left: 15px;
             font-size: 1em;
             transition: color 0.2s;
-            padding: 5px; /* Added for easy clicking */
+            padding: 5px; 
         }
         
         .song-download-link:hover {
-            color: var(--status-color); /* Green for download */
-        }
-        
-        .song-item.active .song-download-link {
-            color: white;
+            color: var(--status-color); 
         }
         
 
@@ -387,7 +390,7 @@
             transition: all 0.3s;
         }
 
-        /* Cover Animation */
+        /* Cover Animation (Spinning when playing) */
         .player-cover.animate {
             border-radius: 50%; 
             border: 3px solid var(--primary-color); 
@@ -470,16 +473,6 @@
             border: none;
             box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
         }
-        
-        .progress-bar::-ms-thumb {
-            width: 14px; 
-            height: 14px;
-            background: var(--primary-color); 
-            border-radius: 50%;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
-        }
 
         .time {
             font-size: 0.9em;
@@ -491,7 +484,7 @@
         /* Download Button (Below Controls) */
         .download-btn {
             display: inline-block;
-            background-color: var(--status-color); /* Changed to status-color for visibility */
+            background-color: var(--status-color); 
             color: white; 
             text-decoration: none;
             padding: 10px 20px;
@@ -503,7 +496,7 @@
         }
 
         .download-btn:hover {
-            background-color: #1e7e34; /* Darker green */
+            background-color: #1e7e34; 
             transform: scale(1.05);
             box-shadow: 0 6px 15px rgba(40, 167, 69, 0.6);
         }
@@ -539,10 +532,10 @@
             }
             .search-container {
                 width: 100%;
-                order: 2; /* Search bar last */
+                order: 2; 
             }
             .header-btn {
-                width: 100%; /* Full width button on small screens */
+                width: 100%; 
                 order: 1;
             }
             .player-cover.animate {
@@ -556,7 +549,7 @@
     <header class="header">
         <div class="logo">
             <div class="logo-icon-container">
-                <i class="fas fa-headphones"></i>  </div>
+                <i class="fas fa-headphones"></i> <i class="fas fa-music"></i> </div>
             <h1>A One Music</h1>
             <h4 class="status-message">Sponsored by:- RISHAM004</h4>
         </div>
@@ -609,9 +602,9 @@
     </main>
 
     <script>
-        /* JavaScript for Player Functionality and Notification Update */
+        /* JavaScript for Player Functionality and Song Handling */
 
-        /* * SONG LIST (IMPORTANT: Update these paths to match your files) */
+        /* * SONG LIST: IMPORTANT: Update these paths to match your files * */
         const songs = [
             { title: "Ilakozhiye", coverFile: "ilakozhiye.jpg", audioFile: "ilakozhiye.mp3" },
             { title: "Nera", coverFile: "nera.jpg", audioFile: "Nera.mp3" },
@@ -643,25 +636,28 @@
         const songListBtn = document.getElementById('song-list-btn'); 
 
         /* State Variables */
-        let currentSongIndex = -1; // -1 means no song is currently loaded
+        let currentSongIndex = -1; 
         let isPlaying = false;
+        
         let notificationInstance = null; 
         let notificationIntervalId = null; 
 
         /* --- Utility Functions --- */
 
-        // Format time in seconds to mm:ss format
         function formatTime(seconds) {
             const minutes = Math.floor(seconds / 60);
             const remainingSeconds = Math.floor(seconds % 60);
             return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
         }
+        
+        function getCoverUrl(filename) {
+             return filename; 
+        }
 
-        /* --- Notification Functions --- */
+        /* --- Notification Functions (Requires user permission) --- */
 
         function requestNotificationPermission() {
             if (!("Notification" in window)) {
-                console.log("This browser does not support desktop notification");
                 return;
             }
             if (Notification.permission === "default") {
@@ -680,11 +676,6 @@
             }
         }
         
-        function getCoverUrl(filename) {
-             return filename;
-        }
-
-
         function updatePlaybackNotification(song) {
             if (Notification.permission !== "granted") {
                 return; 
@@ -693,9 +684,7 @@
             const updateNotification = () => {
                 const currentTime = formatTime(audio.currentTime);
                 const duration = formatTime(audio.duration || 0);
-                
                 const titleText = isPlaying ? `▶ Playing: ${song.title}` : `⏸ Paused: ${song.title}`;
-
                 const iconPath = getCoverUrl(song.coverFile);
                 
                 const options = {
@@ -706,7 +695,6 @@
                 };
                 
                 closeNotification(); 
-
                 notificationInstance = new Notification(titleText, options);
 
                 notificationInstance.onclick = function(event) {
@@ -744,14 +732,12 @@
                 playerCoverEl.src = 'InShot_20251204_191559604.png'; 
             };
             
-            // Update Download Link
             downloadLink.href = song.audioFile;
             const fileExtension = song.audioFile.split('.').pop(); 
             downloadLink.setAttribute('download', `${song.title}.${fileExtension}`); 
             downloadLink.style.display = 'inline-block'; 
 
             updateSongListUI(currentSongIndex);
-            
             closeNotification(); 
         }
 
@@ -779,6 +765,11 @@
                 });
             }
         }
+        
+        function pauseSong() {
+            audio.pause();
+        }
+
 
         function playNext() {
             if (songs.length === 0) return;
@@ -838,6 +829,7 @@
                 playIcon.setAttribute('title', 'Play');
                 controlsDiv.appendChild(playIcon);
                 
+                // Download link in the list view
                 const downloadLinkItem = document.createElement('a');
                 downloadLinkItem.href = song.audioFile;
                 const fileExtension = song.audioFile.split('.').pop(); 
@@ -851,6 +843,7 @@
 
 
                 listItem.addEventListener('click', (event) => {
+                    // Prevent download link click from triggering play
                     if (event.target.closest('.song-download-link')) {
                         return;
                     }
@@ -874,6 +867,7 @@
             }
         }
         
+        // Icon used when cover image is missing
         function createIconPlaceholder() {
             const placeholder = document.createElement('div');
             placeholder.classList.add('song-icon-placeholder');
@@ -902,6 +896,7 @@
                 }
             });
             
+            // Update main play/pause button icon and glow
             if (isPlaying) {
                 playPauseBtn.classList.add('playing');
                 playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
@@ -921,6 +916,7 @@
             renderSongList(filteredSongs);
         }
 
+        // Toggles the spinning disc animation on the cover image
         function toggleAnimation(is_playing) {
             if (is_playing) {
                 playerCoverEl.classList.add('animate');
@@ -941,9 +937,9 @@
         nextBtn.addEventListener('click', playNext);
         prevBtn.addEventListener('click', playPrev);
         
-        // EVENT LISTENER FOR THE SONG LIST BUTTON
         songListBtn.addEventListener('click', scrollToSongList); 
 
+        // Update progress bar max value and duration when audio loads
         audio.addEventListener('loadedmetadata', () => {
             progressBar.max = audio.duration;
             durationEl.textContent = formatTime(audio.duration);
@@ -952,11 +948,13 @@
             }
         });
 
+        // Update progress bar and current time while playing
         audio.addEventListener('timeupdate', () => {
             progressBar.value = audio.currentTime;
             currentTimeEl.textContent = formatTime(audio.currentTime);
         });
 
+        // Auto-play next song when current one ends
         audio.addEventListener('ended', () => {
             closeNotification(); 
             playNext(); 
@@ -982,6 +980,7 @@
             }
         });
 
+        // Allow user to drag the progress bar
         progressBar.addEventListener('input', () => {
             currentTimeEl.textContent = formatTime(progressBar.value);
         });
