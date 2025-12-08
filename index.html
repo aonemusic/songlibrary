@@ -27,7 +27,7 @@
             --glass-color: rgba(255, 255, 255, 0.20); /* Slightly more transparent */
             --glass-border: rgba(255, 255, 255, 0.4); /* Border slightly brighter */
             --glass-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Stronger shadow */
-            --blur-amount: 12px; /* INCREASED BLUR to 12px */
+            --blur-amount: 12px; /* INCREASED BLUR to 12px for more watery/blur look */
             --hover-glass-color: rgba(255, 255, 255, 0.45); /* Hover color */
             --active-glass-color: rgba(0, 123, 255, 0.35); /* Transparent blue for active state */
         }
@@ -97,7 +97,7 @@
             border: 1px solid var(--glass-border); 
             border-radius: 10px;
             box-shadow: var(--glass-shadow); 
-            backdrop-filter: blur(var(--blur-amount));
+            backdrop-filter: blur(var(--blur-amount)); /* <--- STRONGER BLUR APPLIED HERE */
             -webkit-backdrop-filter: blur(var(--blur-amount)); 
             transition: all 0.3s ease; 
         }
@@ -1000,3 +1000,4 @@
     </script>
 </body>
 </html>
+
