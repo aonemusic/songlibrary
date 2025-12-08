@@ -73,26 +73,39 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* * IMPORTANT: MODIFICATION HERE 
-         * Added Background Image, Glass Frame, and Shadow to the body 
-         */
+        /* --- BACKGROUND FIX: Applied background image and blur using a pseudo-element --- */
         body {
-            /* 1. Set the background image */
+            /* 1. Set the background image directly on the body */
             background-image: url('aonemusic-b.jpg');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; /* Keeps the background image still when scrolling */
+            background-attachment: fixed; 
             
-            /* 2. Apply a subtle glass frame effect over the background image */
-            background-color: rgba(255, 255, 255, 0.1); /* Slight white overlay for glass feel */
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            
-            /* 3. General body styles */
+            /* 2. General body styles */
             color: var(--text-color);
             min-height: 100vh;
             padding: 20px;
+            /* Ensure content is positioned correctly */
+            position: relative;
+            z-index: 1; 
         }
+
+        /* 3. Pseudo-element for the full-screen blur/glass layer */
+        body::before {
+            content: '';
+            position: fixed; 
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Placed behind the actual content */
+            
+            /* The key Glass Layer */
+            background-color: rgba(255, 255, 255, 0.1); /* Subtle white overlay */
+            backdrop-filter: blur(5px); /* Blurs the background image */
+            -webkit-backdrop-filter: blur(5px);
+        }
+        /* --- END BACKGROUND FIX --- */
         
         /* Global Glass Frame Styling Mixin (Helper for quick application) */
         .glass-frame {
@@ -669,6 +682,7 @@
                 // Close the old notification before creating a new one
                 closeNotification(); 
 
+                // Ensure the icon file exists or the notification might fail
                 notificationInstance = new Notification(titleText, options);
 
                 // --- Handling Button Clicks via 'action' ---
