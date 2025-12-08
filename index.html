@@ -71,13 +71,13 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* --- BACKGROUND FIX: Applied background image directly on body --- */
+        /* --- BACKGROUND FIX: Applied background color directly on body, removed image --- */
         body {
-            /* 1. Set the background image directly on the body */
-            background-image: url('aonemusic-b.jpg'); /* <-- CHANGE THIS PATH */
+            /* REMOVED: background-image: url('aonemusic-b.jpg'); */
+            background-color: var(--background-color); /* Added solid background color */
             background-size: cover;
             background-position: center;
-            background-attachment: fixed; /* Ensures background image remains fixed while scrolling */
+            background-attachment: fixed; 
             
             /* 2. General body styles */
             color: var(--text-color);
@@ -157,17 +157,13 @@
             text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
         }
         
+        /* Only the headphones icon remains centered */
         .logo-icon-container .fa-headphones {
             left: 0;
             top: 0;
         }
-        .logo-icon-container .fa-music { 
-            left: 5px; 
-            top: 5px;
-            font-size: 1.2em;
-            color: var(--status-color); 
-            text-shadow: none; 
-        }
+        
+        /* REMOVED: .logo-icon-container .fa-music style rule */
 
         .logo h1 {
             font-size: 1.8em;
@@ -557,7 +553,7 @@
     <header class="header">
         <div class="logo">
             <div class="logo-icon-container">
-                <i class="fas fa-headphones"></i>  </div>
+                <i class="fas fa-headphones"></i> </div>
             <h1>A One Music</h1>
             <h4 class="status-message">RISHAM004</h4>
         </div>
