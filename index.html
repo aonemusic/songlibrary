@@ -3,45 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A One Music Player - White & Shadow</title>
+    <title>A One Music Player - Glassmorphism</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <link rel="icon" type="image/png" href="InShot_20251204_191559604.png"> 
     
     <style>
-        /* CSS from style.css */
+        /* CSS for Glassmorphism Style */
         
         /* Custom Fonts and Reset */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         
-        /* --- WHITE & SHADOW COLOR PALETTE --- */
-        /* All colors are changed to support a bright, clean, shadow-based design */
+        /* --- GLASSMORHISM COLOR PALETTE & VARIABLES --- */
         :root {
-            --primary-color: #007bff; /* Bright Blue (Primary Accent) */
-            --background-color: #F0F2F5; /* Very Light Gray/Off-White for Background */
-            --card-color: #FFFFFF; /* Pure White for Cards/Elements */
-            --text-color: #333333; /* Dark Gray for Main Text */
-            --secondary-text-color: #6c757d; /* Medium Gray for Secondary Text */
-            --hover-color: #e9ecef; /* Light Gray for Hover States */
+            /* General Colors (Kept light for the background) */
+            --primary-color: #007bff; /* Bright Blue (Accent) */
+            --background-color: #c9e8ff; /* Light, slightly vibrant background for contrast with glass */
+            --text-color: #1a1a1a; /* Very Dark Gray for Main Text */
+            --secondary-text-color: #333333; /* Darker Gray for Secondary Text */
             --status-color: #28a745; /* Green for status/active */
             
-            /* NEW SHADOW VARIABLES */
-            --main-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            --hover-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-            --active-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Blue glow for active item */
+            /* NEW GLASSMORHISM VARIABLES */
+            --glass-color: rgba(255, 255, 255, 0.2); /* Very translucent white for background */
+            --glass-border: rgba(255, 255, 255, 0.4); /* Subtle, lighter border */
+            --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Soft, subtle shadow */
+            --blur-amount: 10px; /* The key blur amount */
+            --hover-glass-color: rgba(255, 255, 255, 0.3); /* Slightly less translucent on hover */
         }
-        /* ----------------------------------- */
+        /* --------------------------------------------- */
         
-        /* --- NEW ANIMATIONS (Adjusted for Shadow/Color) --- */
+        /* --- NEW ANIMATIONS (Adjusted for Glass/Color) --- */
         
-        /* Keyframes for the pulsing effect (changed from glow to shadow/scale) */
+        /* Keyframes for the pulsing effect (updated for glass) */
         @keyframes pulse-glow {
-            0% { box-shadow: var(--main-shadow); transform: scale(1); }
-            50% { box-shadow: 0 0 20px rgba(0, 123, 255, 0.4); transform: scale(1.05); }
-            100% { box-shadow: var(--main-shadow); transform: scale(1); }
+            0% { box-shadow: var(--glass-shadow); transform: scale(1); }
+            50% { box-shadow: 0 0 20px rgba(0, 123, 255, 0.5); transform: scale(1.03); }
+            100% { box-shadow: var(--glass-shadow); transform: scale(1); }
         }
 
-        /* Keyframes for 'Coming Soon' text (changed from neon glow to color pulse) */
+        /* Keyframes for 'Coming Soon' text (kept) */
         @keyframes status-pulse {
             0%, 100% { 
                 opacity: 1;
@@ -73,12 +73,24 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        /* IMPORTANT: Glassmorphism needs a non-solid, contrasting background */
         body {
-            /* Changed to light background */
-            background-color: var(--background-color);
+            background: linear-gradient(135deg, var(--background-color), #007bff40); /* Gradient background */
             color: var(--text-color);
             min-height: 100vh;
             padding: 20px;
+        }
+        
+        /* Global Glass Frame Styling Mixin (Helper for quick application) */
+        .glass-frame {
+            background: var(--glass-color); 
+            border: 1px solid var(--glass-border); /* Subtle border */
+            border-radius: 10px;
+            box-shadow: var(--glass-shadow); 
+            /* The key to Glassmorphism: Backdrop Blur */
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount)); /* Safari support */
+            transition: all 0.3s ease; /* For smooth hover effects */
         }
 
         /* --- Header & Logo --- */
@@ -87,12 +99,14 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 30px;
-            /* Changed to pure white card color */
-            background-color: var(--card-color);
-            border-radius: 10px;
             margin-bottom: 20px;
-            /* Replaced dark/neon shadow with soft, main shadow */
-            box-shadow: var(--main-shadow); 
+            /* Apply Glass Frame Style */
+            background: var(--glass-color); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 10px;
+            box-shadow: var(--glass-shadow); 
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
         }
 
         .logo {
@@ -103,7 +117,7 @@
         /* NEW LOGO STYLES (Headphones + Bars) */
         .logo-icon-container {
             position: relative;
-            width: 40px; /* Adjust size */
+            width: 40px; 
             height: 35px;
             margin-right: 15px;
         }
@@ -112,8 +126,7 @@
         .logo-icon-container i {
             position: absolute;
             font-size: 2em;
-            color: var(--primary-color); /* Bright Blue */
-            /* Removed Neon Glow and added subtle shadow for depth */
+            color: var(--primary-color); 
             text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
         }
         
@@ -122,12 +135,12 @@
             left: 0;
             top: 0;
         }
-        .logo-icon-container .fa-music { /* Used for the vertical bars */
-            left: 5px; /* Adjust bar position relative to headphones */
+        .logo-icon-container .fa-music { 
+            left: 5px; 
             top: 5px;
             font-size: 1.2em;
-            color: var(--status-color); /* Green accent */
-            text-shadow: none; /* Removed glow */
+            color: var(--status-color); 
+            text-shadow: none; 
         }
         /* END NEW LOGO STYLES */
 
@@ -138,17 +151,15 @@
         }
         
         .logo .status-message {
-            color: var(--status-color); /* Green status */
+            color: var(--status-color); 
             font-size: 1em;
             font-weight: 600; 
             margin-left: 15px; 
             align-self: flex-end; 
-            
-            /* ADDED ANIMATION: Color pulsing effect */
             animation: status-pulse 2s infinite ease-in-out;
         }
 
-        /* --- Search Bar --- */
+        /* --- Search Bar (Adjusted for Glass style) --- */
         .search-container {
             position: relative;
             width: 300px;
@@ -157,20 +168,22 @@
         #search-bar {
             width: 100%;
             padding: 10px 40px 10px 15px;
-            /* Light, subtle border */
-            border: 1px solid var(--hover-color); 
+            /* Glass Style Input */
+            border: 1px solid var(--glass-border); 
             border-radius: 50px;
-            background-color: var(--background-color); /* Light background for input */
+            background-color: var(--hover-glass-color); /* Slightly opaque background */
             color: var(--text-color);
             font-size: 1em;
             outline: none;
             transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05); /* Inner shadow for depth */
+            backdrop-filter: blur(5px); /* Less blur for input */
+            -webkit-backdrop-filter: blur(5px);
         }
 
         #search-bar:focus {
              border-color: var(--primary-color);
-             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); /* Focus blue ring */
+             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); 
+             background-color: var(--glass-color); /* More translucent on focus */
         }
 
         #search-bar::placeholder {
@@ -193,22 +206,24 @@
             margin: 0 auto;
         }
 
-        /* --- Song List --- */
+        /* --- Song List (Applied Glass Frame) --- */
         .song-list-container {
             flex: 1;
-            /* Changed to pure white card color */
-            background-color: var(--card-color);
             padding: 20px;
+            /* Apply Glass Frame Style */
+            background: var(--glass-color); 
+            border: 1px solid var(--glass-border); 
             border-radius: 10px;
-            /* Applied main box shadow */
-            box-shadow: var(--main-shadow);
+            box-shadow: var(--glass-shadow); 
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
         }
 
         .song-list-container h2 {
-            color: var(--primary-color); /* Bright Blue accent for title */
+            color: var(--primary-color); 
             margin-bottom: 15px;
             font-size: 1.5em;
-            border-bottom: 2px solid var(--hover-color);
+            border-bottom: 2px solid var(--glass-border); /* Subtle border for separator */
             padding-bottom: 10px;
         }
 
@@ -224,11 +239,11 @@
             width: 8px;
         }
         .song-list::-webkit-scrollbar-thumb {
-            background-color: var(--primary-color); /* Bright Blue scroll thumb */
+            background-color: var(--primary-color); 
             border-radius: 10px;
         }
         .song-list::-webkit-scrollbar-track {
-            background: var(--hover-color);
+            background: var(--glass-color); /* Translucent track */
             border-radius: 10px;
         }
 
@@ -244,22 +259,20 @@
         }
 
         .song-item:hover {
-            /* Light hover background */
-            background-color: var(--hover-color);
-            /* Subtle lift effect on hover */
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08); 
+            /* Subtle hover effect on glass */
+            background-color: var(--hover-glass-color); 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); 
         }
 
         .song-item.active {
-            background-color: var(--primary-color); /* Bright Blue active background */
-            color: var(--card-color); /* White text on active item */
+            /* Active item stands out with a solid background */
+            background-color: var(--primary-color); 
+            color: white; 
             font-weight: 600;
-            /* Added light shadow for active item */
-            box-shadow: var(--active-shadow);
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.6); 
         }
         .song-item.active .song-info span {
-            /* White secondary text on active item */
-            color: var(--card-color);
+            color: white;
         }
 
 
@@ -269,7 +282,8 @@
             object-fit: cover;
             border-radius: 4px;
             margin-right: 15px;
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+            /* Subtle shadow for depth */
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
         }
 
         .song-info {
@@ -287,29 +301,31 @@
         }
 
         .play-icon {
-            font-size: 1.2em;
-            color: var(--primary-color); /* Bright Blue play icon */
+            color: var(--primary-color); 
         }
         .song-item.active .play-icon {
-            color: var(--card-color); /* White icon on active item */
+            color: white; 
         }
 
-        /* --- Current Player --- */
+        /* --- Current Player (Applied Glass Frame) --- */
         .current-player-container {
             width: 350px;
             flex-shrink: 0;
         }
 
         .player-card {
-            /* Changed to pure white card color */
-            background-color: var(--card-color);
             padding: 30px;
-            border-radius: 10px;
             text-align: center;
-            /* Applied main box shadow */
-            box-shadow: var(--main-shadow);
             position: sticky;
             top: 20px; 
+            
+            /* Apply Glass Frame Style */
+            background: var(--glass-color); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 10px;
+            box-shadow: var(--glass-shadow); 
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
         }
 
         .player-cover {
@@ -317,19 +333,17 @@
             max-width: 250px;
             height: auto;
             border-radius: 10px;
-            /* Subtle cover shadow */
-            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* Darker shadow for depth */
             margin-bottom: 20px;
             object-fit: cover;
+            transition: all 0.3s;
         }
 
         /* New CSS for Animation */
         .player-cover.animate {
             border-radius: 50%; 
-            /* Subtle border in primary color */
             border: 3px solid var(--primary-color); 
-            /* Subtle shadow glow for animation */
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.4); 
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.6), 0 0 20px rgba(0, 123, 255, 0.3); /* Enhanced glow */
             animation: spin 10s linear infinite;
         }
         /* End New CSS for Animation */
@@ -338,7 +352,7 @@
             font-size: 1.4em;
             margin-bottom: 25px;
             min-height: 40px;
-            color: var(--primary-color); /* Bright Blue title */
+            color: var(--primary-color); 
         }
 
         /* Player Controls */
@@ -355,7 +369,7 @@
 
         #play-pause-btn {
             font-size: 2.5em;
-            color: var(--primary-color); /* Bright Blue main button */
+            color: var(--primary-color); 
             transition: all 0.2s;
         }
 
@@ -381,10 +395,10 @@
 
         .progress-bar {
             flex-grow: 1;
-            height: 8px; /* Slightly thicker */
+            height: 8px; 
             -webkit-appearance: none;
             appearance: none;
-            background: var(--hover-color);
+            background: var(--hover-glass-color); /* Translucent track */
             border-radius: 5px;
             margin: 0 10px;
             cursor: pointer;
@@ -393,13 +407,12 @@
         .progress-bar::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 14px; /* Slightly larger thumb */
+            width: 14px; 
             height: 14px;
-            background: var(--primary-color); /* Bright Blue progress thumb */
+            background: var(--primary-color); 
             border-radius: 50%;
             cursor: pointer;
-            /* Added shadow to thumb */
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
         }
 
         .time {
@@ -412,21 +425,21 @@
         /* Download Button */
         .download-btn {
             display: inline-block;
-            background-color: var(--primary-color); /* Bright Blue button */
-            color: var(--card-color); /* White text on button */
+            background-color: var(--primary-color); 
+            color: white; 
             text-decoration: none;
             padding: 10px 20px;
             border-radius: 50px;
             margin-top: 25px;
             font-weight: 600;
             transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
-            box-shadow: var(--main-shadow);
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.4); /* Primary color shadow */
         }
 
         .download-btn:hover {
-            background-color: #0056b3; /* Darker Blue on hover */
+            background-color: #0056b3; 
             transform: scale(1.05);
-            box-shadow: var(--hover-shadow);
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.6);
         }
 
         .download-btn i {
