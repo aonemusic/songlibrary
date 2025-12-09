@@ -3,48 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A One Music Player - song download for free</title>
+    <title>A One Music Player - Full Glassmorphism</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <style>
-        /* CSS for Style (Modified to Liquid Glass / Soft Glass Effect) */
+        /* CSS for Style (Reverted to classic, strong Glassmorphism) */
         
         /* Custom Fonts and Reset */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
         
-        /* --- COLOR PALETTE & VARIABLES (MODIFIED FOR LIQUID/SOFT GLASS) --- */
+        /* --- COLOR PALETTE & VARIABLES (CLASSIC GLASSMORPHISM) --- */
         :root {
             /* General Colors */
-            --primary-color: #007bff; 
-            --background-color: #ebf5ff; /* Lighter background for Soft UI base */
-            --text-color: #1a1a1a; 
-            --secondary-text-color: #555555; /* Slightly softer secondary text */
-            --status-color: #28a745; 
+            --primary-color: #007bff; /* Blue */
+            --background-color: #c9e8ff; /* Fallback light blue */
+            --text-color: #ffffff; /* White text for contrast on transparent surfaces */
+            --secondary-text-color: #eeeeee; /* Lighter secondary text */
+            --status-color: #28a745; /* Green */
             
-            /* LIQUID/SOFT GLASS VARIABLES */
-            --liquid-bg: rgba(255, 255, 255, 0.6); /* Soft, light background */
-            --liquid-border: none; /* No hard border */
-            /* DUAL SOFT SHADOWS (Neumorphism style for a 'liquid' elevation) */
-            --liquid-shadow: 
-                6px 6px 12px rgba(174, 174, 192, 0.4), /* Dark shadow for depth */
-                -6px -6px 12px rgba(255, 255, 255, 0.9); /* Light shadow for highlight */
-            --blur-amount: 0px; 
-            --hover-liquid-bg: rgba(255, 255, 255, 0.9); 
-            --active-liquid-color: rgba(0, 123, 255, 0.15); /* Very light blue for active */
+            /* GLASSMORPHISM VARIABLES (HIGH TRANSPARENCY + BLUR) */
+            --glass-color: rgba(255, 255, 255, 0.15); /* Very transparent white */
+            --glass-border: rgba(255, 255, 255, 0.4); /* Frosted border */
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.25); /* Stronger shadow */
+            --blur-amount: 10px; /* CRITICAL: The Glassmorphism Blur */
+            --hover-glass-color: rgba(255, 255, 255, 0.3); /* Brighter hover */
+            --active-glass-color: rgba(0, 123, 255, 0.35); /* Transparent blue for active state */
         }
         /* --------------------------------------------- */
         
-        /* --- ANIMATIONS (Modified for softer glow) --- */
+        /* --- ANIMATIONS --- */
         
         @keyframes pulse-glow {
-            0% { box-shadow: var(--liquid-shadow); transform: scale(1); }
-            50% { 
-                /* Softer, more widespread glow */
-                box-shadow: 0 0 30px rgba(0, 123, 255, 0.6), 
-                            var(--liquid-shadow); 
-                transform: scale(1.02); 
-            }
-            100% { box-shadow: var(--liquid-shadow); transform: scale(1); }
+            0% { box-shadow: var(--glass-shadow); transform: scale(1); }
+            50% { box-shadow: 0 0 20px rgba(0, 123, 255, 0.7), var(--glass-shadow); transform: scale(1.03); }
+            100% { box-shadow: var(--glass-shadow); transform: scale(1); }
         }
 
         @keyframes status-pulse {
@@ -77,7 +69,7 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        /* --- BACKGROUND FIX: Applied background image directly on body --- */
+        /* --- BACKGROUND SETUP: Required for visible blur effect --- */
         body {
             /* 1. Set the background image directly on the body */
             background-image: url('aonemusic-b.jpg'); /* <-- CHANGE THIS PATH */
@@ -91,24 +83,23 @@
             padding: 20px;
             position: relative;
             z-index: 1; 
-            /* Set fallback color */
-            background-color: var(--background-color); 
+            background-color: var(--background-color); /* Fallback */
         }
         
-        /* Global Liquid Glass Frame Styling Mixin */
+        /* Global Glass Frame Styling Mixin */
         .glass-frame, 
         .header, 
         .player-card, 
         .song-list-container,
         .header-btn {
-            /* The Liquid/Soft Glass Effect applied to the container */
-            background: var(--liquid-bg); 
-            border: var(--liquid-border); /* Removed border */
-            border-radius: 15px; /* Slightly larger radius for softer look */
-            box-shadow: var(--liquid-shadow); /* Applied Dual Soft Shadow */
-            backdrop-filter: none; 
-            -webkit-backdrop-filter: none; 
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); /* Smoother transition */
+            /* CRITICAL GLASSMOPRHISM PROPERTIES */
+            background: var(--glass-color); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 15px;
+            box-shadow: var(--glass-shadow); 
+            backdrop-filter: blur(var(--blur-amount)); /* THE BLUR EFFECT */
+            -webkit-backdrop-filter: blur(var(--blur-amount)); 
+            transition: all 0.4s ease-in-out; 
         }
 
         /* --- Header & Logo --- */
@@ -117,42 +108,34 @@
             justify-content: space-between;
             align-items: center;
             padding: 15px 30px;
-            margin-bottom: 25px; /* Increased margin */
-            border-radius: 15px; /* Match container radius */
+            margin-bottom: 25px; 
+            border-radius: 15px;
         }
         
-        /* New: Header Actions Container */
         .header-actions {
             display: flex;
             align-items: center;
             gap: 20px;
         }
 
-        /* UPDATED: Songs List Button Style (Soft-Pressed Model) */
         .header-btn {
             color: var(--primary-color); 
             padding: 10px 18px;
-            border-radius: 25px; /* Softer edges */
+            border-radius: 50px;
             font-weight: 600;
             cursor: pointer;
-            border: none;
-            background: var(--liquid-bg);
-            box-shadow: 3px 3px 7px rgba(174, 174, 192, 0.3), 
-                        -3px -3px 7px rgba(255, 255, 255, 0.8); /* Smaller soft shadow */
+            /* Ensured button itself has the glass effect */
+            background: var(--glass-color); 
+            border: 1px solid var(--glass-border); 
+            backdrop-filter: blur(var(--blur-amount));
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
         }
         
         .header-btn:hover {
-            background-color: var(--hover-liquid-bg); /* Lighter hover effect */
-            transform: scale(1.03);
-            box-shadow: 5px 5px 10px rgba(174, 174, 192, 0.4), 
-                        -5px -5px 10px rgba(255, 255, 255, 0.9); /* Soft hover elevation */
-        }
-        
-        .header-btn:active {
-            /* 'Pressed-in' effect for liquid feel */
-            box-shadow: inset 2px 2px 5px rgba(174, 174, 192, 0.4), 
-                        inset -2px -2px 5px rgba(255, 255, 255, 0.8);
-            transform: scale(0.98);
+            background-color: var(--hover-glass-color); 
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.4); 
         }
 
         .logo {
@@ -171,7 +154,7 @@
             position: absolute;
             font-size: 2em;
             color: var(--primary-color); 
-            text-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+            text-shadow: 0 0 5px rgba(0, 123, 255, 0.8);
         }
         
         .logo-icon-container .fa-headphones {
@@ -183,6 +166,8 @@
         .logo h1 {
             font-size: 1.8em;
             font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
         }
         
         .logo .status-message {
@@ -202,26 +187,22 @@
 
         #search-bar {
             width: 100%;
-            padding: 12px 40px 12px 20px;
-            border: none; 
-            border-radius: 30px;
-            background-color: var(--liquid-bg); /* Soft background */
+            padding: 10px 40px 10px 15px;
+            border: 1px solid var(--glass-border); 
+            border-radius: 50px;
+            background-color: var(--hover-glass-color); /* Slightly higher opacity for input */
             color: var(--text-color);
             font-size: 1em;
             outline: none;
-            transition: all 0.3s;
-            /* Inset shadow for "Liquid Pressed" look */
-            box-shadow: inset 3px 3px 7px rgba(174, 174, 192, 0.4), 
-                        inset -3px -3px 7px rgba(255, 255, 255, 0.8);
-            backdrop-filter: none; 
-            -webkit-backdrop-filter: none;
+            backdrop-filter: blur(var(--blur-amount)); 
+            -webkit-backdrop-filter: blur(var(--blur-amount));
+            transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
         }
 
         #search-bar:focus {
-             box-shadow: inset 1px 1px 2px rgba(174, 174, 192, 0.4), 
-                         inset -1px -1px 2px rgba(255, 255, 255, 0.8),
-                         0 0 0 3px rgba(0, 123, 255, 0.15); /* Subtle blue ring focus */
-             background-color: var(--hover-liquid-bg); 
+             border-color: var(--primary-color);
+             box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); 
+             background-color: var(--glass-color); 
         }
 
         #search-bar::placeholder {
@@ -239,7 +220,7 @@
         /* --- Main Layout --- */
         .container {
             display: flex;
-            gap: 25px; /* Increased gap */
+            gap: 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -247,16 +228,17 @@
         /* --- Song List --- */
         .song-list-container {
             flex: 1;
-            padding: 25px;
-            border-radius: 15px; /* Match container radius */
+            padding: 20px;
+            border-radius: 15px;
         }
 
         .song-list-container h2 {
             color: var(--primary-color); 
-            margin-bottom: 20px;
-            font-size: 1.6em;
-            border-bottom: 2px solid rgba(0, 123, 255, 0.2); /* Softer separator */
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-bottom: 2px solid var(--glass-border); 
             padding-bottom: 10px;
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
         }
 
         .song-list {
@@ -275,7 +257,7 @@
             border-radius: 10px;
         }
         .song-list::-webkit-scrollbar-track {
-            background: var(--liquid-bg); 
+            background: rgba(255, 255, 255, 0.1); 
             border-radius: 10px;
         }
 
@@ -285,11 +267,11 @@
             align-items: center;
             padding: 10px;
             margin-bottom: 8px;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
             position: relative;
-            /* Reset to base styling for items */
+            /* Reset specific glass properties here to avoid double-blur on items */
             background: none;
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
@@ -297,29 +279,34 @@
             box-shadow: none;
         }
 
-        /* MODIFIED: Apply soft hover effect on the item */
+        /* MODIFIED: Apply strong glass hover effect on the item */
         .song-item:hover {
-            background-color: var(--hover-liquid-bg); 
-            /* Soft inner shadow on hover for a 'rippling' effect */
-            box-shadow: inset 1px 1px 3px rgba(174, 174, 192, 0.2);
-            transform: translateY(-2px); 
+            background-color: var(--hover-glass-color); 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+            transform: scale(1.01);
         }
 
-        /* MODIFIED: Apply soft active effect */
+        /* MODIFIED: Apply glass active effect */
         .song-item.active {
-            background-color: var(--active-liquid-color); 
+            background-color: var(--active-glass-color); 
             color: var(--text-color); 
             font-weight: 600;
             border: 1px solid var(--primary-color); 
-            /* Subtle blue glow for playing state */
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.3); 
+            box-shadow: 0 0 15px rgba(0, 123, 255, 0.6); 
         }
-        /* MODIFIED: Adjust colors for active state */
+
+        /* Ensured all text is visible against dark background/blur */
+        .song-info strong,
+        .song-info span,
+        .play-icon,
+        .song-download-link {
+            color: var(--secondary-text-color); 
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+        }
         .song-item.active .song-info strong,
         .song-item.active .song-info span,
-        .song-item.active .play-icon,
-        .song-item.active .song-download-link {
-            color: var(--text-color); 
+        .song-item.active .play-icon {
+            color: white; 
         }
         .song-item.active .play-icon {
             color: var(--primary-color); 
@@ -339,7 +326,6 @@
             object-fit: cover;
         }
         
-        /* Song Icon Placeholder Style (If cover image is not loaded) */
         .song-icon-placeholder {
             background-color: var(--primary-color);
             color: white;
@@ -357,27 +343,17 @@
         }
 
         .song-info span {
-            color: var(--secondary-text-color);
             font-size: 0.85em;
         }
         
-        /* Play/Pause Icon Container */
-        .song-controls {
-            display: flex;
-            align-items: center;
-        }
-
         .play-icon {
             color: var(--primary-color); 
             font-size: 1.2em;
             transition: color 0.2s;
         }
         
-        /* Download Icon in List */
         .song-download-link {
             text-decoration: none;
-            color: var(--secondary-text-color);
-            margin-left: 15px;
             font-size: 1em;
             transition: color 0.2s;
             padding: 5px; 
@@ -395,11 +371,11 @@
         }
 
         .player-card {
-            padding: 35px; /* Increased padding */
+            padding: 30px;
             text-align: center;
             position: sticky;
-            top: 25px; /* Increased offset */
-            border-radius: 15px; /* Match container radius */
+            top: 20px; 
+            border-radius: 15px;
         }
 
         .player-cover {
@@ -407,8 +383,8 @@
             max-width: 250px;
             height: auto;
             border-radius: 10px;
-            box-shadow: var(--liquid-shadow); /* Soft shadow on the cover */
-            margin-bottom: 25px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5); 
+            margin-bottom: 20px;
             object-fit: cover;
             transition: all 0.3s;
         }
@@ -416,10 +392,8 @@
         /* Cover Animation (Spinning when playing) */
         .player-cover.animate {
             border-radius: 50%; 
-            border: 4px solid var(--primary-color); /* Thicker border */
-            /* Enhanced glowing shadow for the 'liquid' highlight */
-            box-shadow: 0 0 15px rgba(0, 123, 255, 0.8), 
-                        0 0 30px rgba(0, 123, 255, 0.4); 
+            border: 3px solid var(--primary-color); 
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.8), 0 0 20px rgba(0, 123, 255, 0.4); 
             animation: spin 10s linear infinite;
         }
 
@@ -428,32 +402,25 @@
             margin-bottom: 25px;
             min-height: 40px;
             color: var(--primary-color); 
+            text-shadow: 0 0 5px rgba(0, 0, 0, 0.6);
         }
 
         /* Player Controls */
         .controls button {
-            background: var(--liquid-bg);
+            background: none;
             border: none;
             color: var(--secondary-text-color);
-            font-size: 2em; 
+            font-size: 1.8em;
             margin: 0 10px;
             cursor: pointer;
-            transition: all 0.2s, transform 0.1s;
-            padding: 0; 
-            border-radius: 50%; 
-            width: 50px; 
-            height: 50px;
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 3px 3px 6px rgba(174, 174, 192, 0.3), -3px -3px 6px rgba(255, 255, 255, 0.7); /* Soft shadow */
+            transition: color 0.2s, transform 0.1s;
+            padding: 5px;
         }
 
         #play-pause-btn {
-            font-size: 3em; /* Larger play button */
+            font-size: 2.5em;
             color: var(--primary-color); 
-            width: 70px; 
-            height: 70px;
+            transition: all 0.2s;
         }
 
         #play-pause-btn.playing {
@@ -462,14 +429,10 @@
 
 
         .controls button:hover {
-            color: var(--primary-color);
-            box-shadow: 5px 5px 10px rgba(174, 174, 192, 0.4), 
-                        -5px -5px 10px rgba(255, 255, 255, 0.9); /* Soft hover elevation */
+            color: white; /* Change button color to white on hover */
+            text-shadow: 0 0 8px var(--primary-color);
         }
         .controls button:active {
-            /* 'Pressed-in' effect for liquid feel */
-            box-shadow: inset 2px 2px 4px rgba(174, 174, 192, 0.4), 
-                        inset -2px -2px 4px rgba(255, 255, 255, 0.8);
             transform: scale(0.95);
         }
 
@@ -485,11 +448,11 @@
             height: 8px; 
             -webkit-appearance: none;
             appearance: none;
-            background: var(--hover-liquid-bg); 
+            background: rgba(255, 255, 255, 0.3); /* Transparent track */
             border-radius: 5px;
             margin: 0 10px;
             cursor: pointer;
-            box-shadow: inset 1px 1px 3px rgba(174, 174, 192, 0.3); /* Slight inner shadow */
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
         .progress-bar::-webkit-slider-thumb {
@@ -518,30 +481,31 @@
             color: var(--secondary-text-color);
             width: 35px;
             text-align: center;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
 
-        /* Download Button (Below Controls) */
+        /* Download Button (Solid Button Style) */
         .download-btn {
             display: inline-block;
             background-color: var(--status-color); 
             color: white; 
             text-decoration: none;
-            padding: 12px 25px; /* Increased padding */
-            border-radius: 30px;
-            margin-top: 30px;
+            padding: 10px 20px;
+            border-radius: 50px;
+            margin-top: 25px;
             font-weight: 600;
-            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
-            /* Enhanced soft shadow for elevation */
-            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.5); 
+            transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.6); 
+            border: none;
+            /* Ensure solid buttons are not transparent/blurred */
             backdrop-filter: none;
             -webkit-backdrop-filter: none;
-            border: none;
         }
 
         .download-btn:hover {
             background-color: #1e7e34; 
-            transform: translateY(-2px); /* Lift slightly on hover */
-            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.7); /* Stronger shadow on hover */
+            transform: scale(1.05);
+            box-shadow: 0 6px 15px rgba(40, 167, 69, 0.8);
         }
 
         .download-btn i {
@@ -646,7 +610,7 @@
     </main>
 
     <script>
-        /* JavaScript for Player Functionality and Song Handling */
+        /* JavaScript for Player Functionality and Song Handling (Unchanged) */
 
         /* * SONG LIST: IMPORTANT: Update these paths to match your files * */
         const songs = [
