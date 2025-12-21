@@ -3,22 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A ONE MUSIC - English Version</title>
+    <title>A ONE MUSIC - Global Playlist</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     
     <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 
     <style>
         :root {
-            --primary-color: #007bff;
+            --primary: #007bff;
             --glass: rgba(255, 255, 255, 0.1);
             --border: rgba(255, 255, 255, 0.2);
-            --success: #28a745;
         }
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0f0f12 0%, #1a1a2e 100%);
+            background: #0f0f12;
+            background-image: radial-gradient(circle at top right, #1a1a2e, #0f0f12);
             color: white;
             margin: 0;
             padding: 20px;
@@ -26,7 +26,6 @@
             min-height: 100vh;
         }
 
-        /* Upload Card Styling */
         .upload-card {
             background: var(--glass);
             backdrop-filter: blur(15px);
@@ -34,208 +33,163 @@
             padding: 25px;
             border-radius: 20px;
             max-width: 450px;
-            margin: 20px auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin: 0 auto 30px;
         }
 
         .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 5px; font-size: 0.9em; color: #bbb; }
-
         input[type="text"] {
             width: 100%; padding: 12px; border-radius: 8px; border: none;
             background: rgba(255,255,255,0.05); color: white; box-sizing: border-box;
-            outline: none;
+            outline: none; margin-top: 5px;
         }
 
-        .file-btn {
-            background: rgba(255,255,255,0.1); padding: 12px; border-radius: 8px;
-            cursor: pointer; display: block; margin-top: 5px; border: 1px dashed var(--border);
-            transition: 0.3s; text-align: center;
+        .btn {
+            background: var(--primary); color: white; border: none;
+            padding: 15px 25px; border-radius: 50px; font-weight: bold;
+            cursor: pointer; width: 100%; transition: 0.3s;
         }
-        .file-btn:hover { background: rgba(255,255,255,0.2); }
 
-        .submit-btn {
-            background: var(--primary-color); color: white; border: none;
-            padding: 15px; border-radius: 50px; font-weight: bold;
-            cursor: pointer; width: 100%; margin-top: 15px; transition: 0.3s;
-        }
-        .submit-btn:hover { background: #0056b3; transform: scale(1.02); }
+        .btn-upload { background: #28a745; margin-top: 10px; }
 
-        /* Animation Area */
-        #upload-status-area { display: none; margin-top: 20px; }
-        .loader {
-            border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-color);
-            border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite;
-            margin: 0 auto 10px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .progress-container { width: 100%; background: #222; border-radius: 10px; height: 8px; margin-top: 10px; }
-        .progress-bar { width: 0%; height: 100%; background: var(--primary-color); transition: width 0.3s; }
-
-        /* Main Display */
-        .main-container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 30px; }
-        .list-box, .player-box { 
-            background: var(--glass); padding: 20px; border-radius: 15px; 
-            width: 350px; border: 1px solid var(--border); 
-        }
-        .song-item { 
-            display: flex; align-items: center; gap: 15px; padding: 12px; 
+        /* Main Container */
+        .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .box { background: var(--glass); padding: 20px; border-radius: 15px; width: 350px; border: 1px solid var(--border); }
+        
+        .track-item {
+            display: flex; align-items: center; gap: 15px; padding: 12px;
             border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s;
         }
-        .song-item:hover { background: rgba(255,255,255,0.1); }
-        .song-item img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; }
+        .track-item:hover { background: rgba(255,255,255,0.1); }
+        .track-item img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; }
+
+        /* Animation */
+        .loader {
+            border: 4px solid #f3f3f3; border-top: 4px solid var(--primary);
+            border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite;
+            display: inline-block; vertical-align: middle; margin-right: 10px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #loading-songs { margin-bottom: 15px; display: none; }
     </style>
 </head>
 <body>
 
-    <h1 style="letter-spacing: 2px;">A ONE MUSIC ✓</h1>
+    <h1>A ONE MUSIC ✓</h1>
 
     <div class="upload-card">
-        <h3><i class="fas fa-cloud-upload-alt"></i> UPLOAD NEW TRACK</h3>
-        
+        <h3><i class="fas fa-plus-circle"></i> Add New Track</h3>
         <div class="input-group">
             <label>Song Title</label>
-            <input type="text" id="song-name" placeholder="Enter song name here...">
+            <input type="text" id="song-name-input" placeholder="Type song name...">
         </div>
-
-        <div class="input-group">
-            <label>Audio File (MP3)</label>
-            <div class="file-btn" onclick="openWidget('audio')"><i class="fas fa-file-audio"></i> Choose Audio</div>
-            <span id="audio-name" style="font-size: 0.75em; color: var(--success); display: block; margin-top: 5px;"></span>
-        </div>
-
-        <div class="input-group">
-            <label>Cover Art (Logo)</label>
-            <div class="file-btn" onclick="openWidget('image')"><i class="fas fa-image"></i> Choose Logo</div>
-            <span id="image-name" style="font-size: 0.75em; color: var(--success); display: block; margin-top: 5px;"></span>
-        </div>
-
-        <button class="submit-btn" id="final-submit" onclick="addToSite()">ADD TO PLAYLIST</button>
-
-        <div id="upload-status-area">
-            <div class="loader"></div>
-            <div id="status-text" style="font-size: 0.9em;">Processing & Saving...</div>
-            <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
-        </div>
+        <button class="btn btn-upload" onclick="openUploadWidget()">
+            <i class="fas fa-upload"></i> Upload & Share
+        </button>
+        <p style="font-size: 0.7em; color: #aaa; margin-top: 10px;">Note: Songs uploaded here will be visible on all devices.</p>
     </div>
 
-    <div class="main-container">
-        <div class="list-box">
-            <h3>Track List 💿</h3>
+    <div id="loading-songs"><div class="loader"></div> Updating Global Playlist...</div>
+
+    <div class="container">
+        <div class="box">
+            <h3>Global Playlist 💿</h3>
             <div id="track-list"></div>
         </div>
-        <div class="player-box">
-            <img id="p-img" src="songlogo.jpg" style="width: 100%; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3);">
-            <h4 id="p-title" style="margin-top: 15px; color: var(--primary-color);">Select a song to play</h4>
-            <audio id="main-audio" controls style="width: 100%; margin-top: 10px;"></audio>
+
+        <div class="box">
+            <img id="player-img" src="songlogo.jpg" style="width: 100%; border-radius: 15px;">
+            <h4 id="player-title" style="margin: 15px 0;">Select a song</h4>
+            <audio id="audio-player" controls style="width: 100%;"></audio>
+            <br>
+            <a id="download-btn" href="#" download style="display:none; color: #28a745; text-decoration: none; margin-top: 15px; display: inline-block;">
+                <i class="fas fa-download"></i> Download MP3
+            </a>
         </div>
     </div>
 
     <script>
         let songs = [];
-        let tempAudio = "";
-        let tempImage = "songlogo.jpg";
-        
-        // Your New Cloudinary Credentials
         const cloudName = "dcsczlahu";
-        const apiKey = "213379191614618";
         const uploadPreset = "ml_default";
+        const tag = "aone_music_global"; // This tag groups all songs together
 
-        // Load data from LocalStorage on page load
-        window.onload = () => {
-            const savedData = localStorage.getItem('my_music_list');
-            if(savedData) {
-                songs = JSON.parse(savedData);
-                updateList();
+        // 1. Fetch Songs from Cloudinary using List API
+        async function fetchGlobalSongs() {
+            document.getElementById('loading-songs').style.display = "block";
+            // Use the JSON list URL (Only works if "Resource List" is enabled in settings)
+            const url = `https://res.cloudinary.com/${cloudName}/video/list/${tag}.json?timestamp=${new Date().getTime()}`;
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error("Settings not enabled");
+                const data = await response.json();
+
+                songs = data.resources.map(file => ({
+                    title: (file.context && file.context.custom && file.context.custom.caption) ? file.context.custom.caption : "Unnamed Track",
+                    url: `https://res.cloudinary.com/${cloudName}/video/upload/v${file.version}/${file.public_id}.${file.format}`,
+                    img: "songlogo.jpg" // You can also use dynamic images if tags are added to images
+                }));
+                renderSongs();
+            } catch (error) {
+                console.error("Cloudinary List API Error:", error);
+                document.getElementById('track-list').innerHTML = "<p style='color:red'>Error: Enable 'Resource List' in Cloudinary Security Settings.</p>";
+            } finally {
+                document.getElementById('loading-songs').style.display = "none";
             }
-        };
-
-        function openWidget(type) {
-            cloudinary.openUploadWidget({
-                cloudName: cloudName,
-                uploadPreset: uploadPreset,
-                sources: ['local'],
-                multiple: false,
-                resourceType: type === 'audio' ? 'video' : 'image'
-            }, (error, result) => {
-                if (!error && result && result.event === "success") {
-                    if (type === 'audio') {
-                        tempAudio = result.info.secure_url;
-                        document.getElementById('audio-name').innerText = "✅ Audio file linked successfully";
-                    } else {
-                        tempImage = result.info.secure_url;
-                        document.getElementById('image-name').innerText = "✅ Image file linked successfully";
-                    }
-                }
-            });
         }
 
-        function addToSite() {
-            const name = document.getElementById('song-name').value;
-            if(!name || !tempAudio) {
-                alert("Please provide both Song Title and Audio file!");
-                return;
-            }
-
-            // Show Animation
-            const statusArea = document.getElementById('upload-status-area');
-            const pBar = document.getElementById('p-bar');
-            statusArea.style.display = "block";
-            document.getElementById('final-submit').disabled = true;
-
-            let width = 0;
-            let interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    songs.push({ title: name, audio: tempAudio, img: tempImage });
-                    
-                    // Save to LocalStorage
-                    localStorage.setItem('my_music_list', JSON.stringify(songs));
-                    
-                    updateList();
-                    statusArea.style.display = "none";
-                    document.getElementById('final-submit').disabled = false;
-                    resetForm();
-                    alert("Song added successfully!");
-                } else {
-                    width += 10;
-                    pBar.style.width = width + "%";
-                }
-            }, 100);
-        }
-
-        function updateList() {
-            const list = document.getElementById('track-list');
-            list.innerHTML = songs.length === 0 ? "<p style='color:#666'>No tracks available</p>" : "";
+        // 2. Render Songs to UI
+        function renderSongs() {
+            const listDiv = document.getElementById('track-list');
+            listDiv.innerHTML = songs.length === 0 ? "No songs found." : "";
             songs.forEach((s, i) => {
-                list.innerHTML += `
-                    <div class="song-item" onclick="playSong(${i})">
+                listDiv.innerHTML += `
+                    <div class="track-item" onclick="playSong(${i})">
                         <img src="${s.img}">
-                        <div style="text-align:left">
-                            <strong>${s.title}</strong><br>
-                            <small style="color:#aaa">Click to play</small>
-                        </div>
+                        <div style="text-align:left"><strong>${s.title}</strong><br><small>Global Track</small></div>
                     </div>`;
             });
         }
 
+        // 3. Play Song
         function playSong(i) {
             const s = songs[i];
-            document.getElementById('p-title').innerText = s.title;
-            document.getElementById('p-img').src = s.img;
-            const a = document.getElementById('main-audio');
-            a.src = s.audio;
-            a.play();
+            document.getElementById('player-title').innerText = s.title;
+            const audio = document.getElementById('audio-player');
+            audio.src = s.url;
+            audio.play();
+            
+            const dl = document.getElementById('download-btn');
+            dl.href = s.url;
+            dl.style.display = "inline-block";
         }
 
-        function resetForm() {
-            document.getElementById('song-name').value = "";
-            document.getElementById('audio-name').innerText = "";
-            document.getElementById('image-name').innerText = "";
-            tempAudio = "";
-            tempImage = "songlogo.jpg";
+        // 4. Open Cloudinary Widget for Upload
+        function openUploadWidget() {
+            const songName = document.getElementById('song-name-input').value;
+            if (!songName) {
+                alert("Please enter a Song Title first!");
+                return;
+            }
+
+            cloudinary.openUploadWidget({
+                cloudName: cloudName,
+                uploadPreset: uploadPreset,
+                tags: [tag], // Important: This tag makes the song appear in the list
+                context: { custom: { caption: songName } }, // Saves the song title
+                resourceType: 'video', // 'video' includes audio files in Cloudinary
+                multiple: false
+            }, (error, result) => {
+                if (!error && result.event === "success") {
+                    alert("Upload Successful! Updating playlist...");
+                    setTimeout(fetchGlobalSongs, 2000); // Reload list after upload
+                    document.getElementById('song-name-input').value = "";
+                }
+            });
         }
+
+        // Initial Load
+        window.onload = fetchGlobalSongs;
     </script>
 </body>
 </html>
