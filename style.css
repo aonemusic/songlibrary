@@ -1,0 +1,13 @@
+:root { --primary: #1DB954; --bg: #0b0b0d; --card: #18181b; --text: #ffffff; }
+body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 150px; }
+.header { display: flex; justify-content: space-between; padding: 15px; background: #000; position: sticky; top: 0; z-index: 100; }
+.user-avatar { width: 35px; height: 35px; border-radius: 50%; border: 2px solid var(--primary); }
+.container { max-width: 500px; margin: auto; padding: 15px; }
+.card { background: var(--card); border-radius: 12px; padding: 15px; margin-bottom: 15px; border: 1px solid #27272a; }
+.track-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-bottom: 1px solid #27272a; cursor: pointer; }
+.track-item img { width: 50px; height: 50px; border-radius: 8px; }
+.bottom-player { position: fixed; bottom: 0; left: 0; right: 0; background: #121212; padding: 15px; border-top: 1px solid #27272a; z-index: 2000; }
+.overlay { position: fixed; inset: 0; background: var(--bg); z-index: 4000; display: none; padding: 20px; overflow-y: auto; }
+.btn { background: var(--primary); color: #000; border: none; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; }
+input { width: 100%; padding: 10px; margin: 10px 0; background: #27272a; color: #fff; border: none; border-radius: 5px; }
+.verified-icon { color: #1d9bf0; font-size: 0.8em; margin-left: 5px; }
