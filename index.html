@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A ONE MUSIC - Advanced</title>
+    <title>A ONE MUSIC - Final</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 
@@ -12,18 +12,15 @@
         body { font-family: 'Poppins', sans-serif; background: #0f0f12; color: white; margin: 0; padding: 20px; text-align: center; }
         .card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--border); padding: 20px; border-radius: 15px; max-width: 400px; margin: 0 auto 20px; }
         input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; background: rgba(255,255,255,0.05); color: white; box-sizing: border-box; outline: none; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
-        .fab-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--success); color: white; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; margin-bottom: 10px; }
+        .fab-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--success); color: white; border: none; font-size: 24px; cursor: pointer; }
         #upload-form { display: none; margin-top: 15px; }
         .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
         .box { background: var(--glass); padding: 20px; border-radius: 15px; width: 350px; border: 1px solid var(--border); }
-        .track-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; position: relative; }
+        .track-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; }
         .track-item img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
-        .stats { font-size: 0.75em; color: #aaa; display: flex; gap: 10px; margin-top: 5px; }
-        .like-btn { cursor: pointer; transition: 0.2s; }
-        .like-btn.liked { color: #ff4d4d; }
         .hidden { display: none; }
-        .upload-info { font-size: 0.8em; color: var(--success); margin-top: 10px; display: none; }
+        .status-msg { font-size: 0.85em; margin: 5px 0; color: #ffeb3b; }
     </style>
 </head>
 <body>
@@ -32,7 +29,7 @@
 
     <div id="auth-section" class="card">
         <h3>Login / Sign Up</h3>
-        <input type="text" id="auth-username" placeholder="Your Name">
+        <input type="text" id="auth-username" placeholder="Full Name">
         <input type="email" id="auth-email" placeholder="Email">
         <input type="password" id="auth-password" placeholder="Password">
         <button class="btn" onclick="handleAuth()">Continue</button>
@@ -45,22 +42,27 @@
         </div>
 
         <div style="margin-bottom: 30px;">
-            <button class="fab-btn" id="toggle-upload" onclick="toggleUploadForm()"><i class="fas fa-plus"></i></button>
+            <button class="fab-btn" onclick="toggleUploadForm()"><i class="fas fa-plus"></i></button>
             
             <div id="upload-form" class="card">
-                <h4>Upload Song</h4>
+                <h4><i class="fas fa-upload"></i> New Song</h4>
                 <input type="text" id="song-name" placeholder="Song Name">
                 <input type="text" id="singer-name" placeholder="Singer Name">
-                <input type="text" id="song-logo" placeholder="Logo URL (or keep blank)">
                 
-                <p style="font-size: 0.8em; color: #bbb; margin: 10px 0;">Select your audio file below:</p>
-                <button class="btn" style="background: #555;" onclick="triggerCloudinary()">
+                <button class="btn" style="background: #6c757d;" onclick="pickFile('image')">
+                    <i class="fas fa-image"></i> Choose Song Logo
+                </button>
+                <div id="logo-status" class="status-msg">No logo selected</div>
+
+                <button class="btn" style="background: #6c757d;" onclick="pickFile('video')">
                     <i class="fas fa-file-audio"></i> Choose Music File
                 </button>
-                <div id="upload-status" class="upload-info">File ready for upload!</div>
+                <div id="audio-status" class="status-msg">No audio selected</div>
+
+                <hr style="border: 0.5px solid var(--border); margin: 15px 0;">
                 
-                <button id="final-upload-btn" class="btn" style="background:var(--success); margin-top: 15px; display: none;" onclick="saveSongData()">
-                    Confirm & Publish
+                <button id="publish-btn" class="btn" style="background:var(--success); display: none;" onclick="saveSongData()">
+                    Publish Song
                 </button>
             </div>
         </div>
@@ -99,9 +101,9 @@
         const auth = getAuth(app);
         const rtdb = getDatabase(app);
 
-        let tempUploadUrl = "";
+        let songUrl = "";
+        let logoUrl = "songlogo.jpg";
 
-        // Auth
         window.handleAuth = async () => {
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
@@ -133,34 +135,36 @@
             form.style.display = form.style.display === "block" ? "none" : "block";
         };
 
-        // Cloudinary Trigger
-        window.triggerCloudinary = () => {
+        // Pick File via Cloudinary
+        window.pickFile = (type) => {
             cloudinary.openUploadWidget({ 
                 cloudName: "dcsczlahu", 
                 uploadPreset: "ml_default", 
-                resourceType: 'video' 
+                resourceType: type 
             }, (err, res) => {
                 if (!err && res.event === "success") {
-                    tempUploadUrl = res.info.secure_url;
-                    document.getElementById('upload-status').style.display = "block";
-                    document.getElementById('final-upload-btn').style.display = "block";
+                    if (type === 'image') {
+                        logoUrl = res.info.secure_url;
+                        document.getElementById('logo-status').innerText = "✅ Logo Uploaded";
+                    } else {
+                        songUrl = res.info.secure_url;
+                        document.getElementById('audio-status').innerText = "✅ Audio Uploaded";
+                    }
+                    if (songUrl) document.getElementById('publish-btn').style.display = "block";
                 }
             });
         };
 
-        // Save Data to Firebase
         window.saveSongData = () => {
             const name = document.getElementById('song-name').value;
             const artist = document.getElementById('singer-name').value;
-            const logo = document.getElementById('song-logo').value || 'songlogo.jpg';
-            
-            if(!name || !artist || !tempUploadUrl) return alert("Fill all details & select file!");
+            if(!name || !artist || !songUrl) return alert("Please fill all details!");
 
             push(ref(rtdb, 'songs'), {
-                title: name, artist: artist, logo: logo, url: tempUploadUrl,
+                title: name, artist: artist, logo: logoUrl, url: songUrl,
                 uploader: auth.currentUser.displayName, views: 0, likes: {}
             }).then(() => {
-                alert("Published Successfully!");
+                alert("Song Published!");
                 location.reload();
             });
         };
@@ -172,37 +176,21 @@
                 snap.forEach((child) => {
                     const song = child.val();
                     const songId = child.key;
-                    const likesCount = song.likes ? Object.keys(song.likes).length : 0;
-                    const isLiked = song.likes && song.likes[auth.currentUser.uid];
-
+                    const lCount = song.likes ? Object.keys(song.likes).length : 0;
+                    
                     const item = document.createElement('div');
                     item.className = 'track-item';
                     item.innerHTML = `
-                        <img src="${song.logo}" onerror="this.src='songlogo.jpg'" onclick="playSong('${songId}')">
+                        <img src="${song.logo}" onclick="playSong('${songId}')">
                         <div style="text-align:left" onclick="playSong('${songId}')">
                             <strong>${song.title}</strong><br>
-                            <small>${song.artist}</small>
-                            <div class="stats">
-                                <span><i class="fas fa-eye"></i> ${song.views || 0}</span>
-                                <span class="like-btn ${isLiked?'liked':''}" onclick="event.stopPropagation(); toggleLike('${songId}')">
-                                    <i class="fas fa-heart"></i> ${likesCount}
-                                </span>
-                            </div>
+                            <small>${song.artist} | <i class="fas fa-heart"></i> ${lCount}</small>
                         </div>
                     `;
                     list.appendChild(item);
                 });
             });
         }
-
-        window.toggleLike = (id) => {
-            const uid = auth.currentUser.uid;
-            const likeRef = ref(rtdb, `songs/${id}/likes/${uid}`);
-            onValue(likeRef, (snap) => {
-                if (snap.exists()) set(likeRef, null);
-                else set(likeRef, true);
-            }, { onlyOnce: true });
-        };
 
         window.playSong = (id) => {
             onValue(ref(rtdb, `songs/${id}`), (snap) => {
