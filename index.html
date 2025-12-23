@@ -3,94 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A ONE MUSIC - Professional</title>
+    <title>A ONE MUSIC - Spotify Style</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 
     <style>
-        :root { --primary: #007bff; --glass: rgba(255, 255, 255, 0.1); --border: rgba(255, 255, 255, 0.2); --success: #28a745; }
-        body { font-family: 'Poppins', sans-serif; background: #0f0f12; color: white; margin: 0; padding: 20px; text-align: center; }
-        
-        /* ലൈവ് കൗണ്ട് ടോപ്പ് റൈറ്റ് സൈഡിൽ */
-        .live-indicator {
-            position: fixed; top: 15px; right: 15px; background: rgba(0, 0, 0, 0.6);
-            padding: 8px 15px; border-radius: 20px; font-size: 0.85em; border: 1px solid var(--border);
-            display: flex; align-items: center; gap: 8px; z-index: 2000;
-        }
-        .dot { width: 8px; height: 8px; background: #28a745; border-radius: 50%; animation: blink 1.5s infinite; }
+        :root { --primary: #1DB954; --dark: #121212; --light-dark: #181818; --glass: rgba(255, 255, 255, 0.05); }
+        body { font-family: 'Poppins', sans-serif; background: var(--dark); color: white; margin: 0; padding: 20px; padding-bottom: 120px; }
+
+        /* ലൈവ് ഇൻഡിക്കേറ്റർ */
+        .live-indicator { position: fixed; top: 15px; right: 15px; background: rgba(0,0,0,0.8); padding: 5px 15px; border-radius: 20px; font-size: 0.8em; border: 1px solid #333; z-index: 1000; }
+        .dot { height: 8px; width: 8px; background: #1DB954; border-radius: 50%; display: inline-block; margin-right: 5px; animation: blink 1.5s infinite; }
         @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
 
-        .card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--border); padding: 20px; border-radius: 15px; max-width: 400px; margin: 0 auto 20px; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; background: rgba(255,255,255,0.05); color: white; box-sizing: border-box; outline: none; }
-        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; margin-bottom: 10px; }
-        .fab-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--success); color: white; border: none; font-size: 24px; cursor: pointer; }
-        #upload-form { display: none; margin-top: 15px; }
-        .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-        .box { background: var(--glass); padding: 20px; border-radius: 15px; width: 350px; border: 1px solid var(--border); }
-        .track-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; text-align: left; }
-        .track-item img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
-        .hidden { display: none; }
+        /* മെയിൻ കണ്ടെയ്നർ */
+        .main-container { max-width: 600px; margin: 0 auto; }
+        .card { background: var(--light-dark); border-radius: 12px; padding: 20px; margin-bottom: 20px; border: 1px solid #282828; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 5px; border: none; background: #333; color: white; box-sizing: border-box; }
+        .btn { background: var(--primary); color: black; border: none; padding: 12px; border-radius: 25px; font-weight: bold; width: 100%; cursor: pointer; }
+
+        /* സോങ് ലിസ്റ്റ് */
+        .track-item { display: flex; align-items: center; gap: 15px; padding: 10px; border-radius: 8px; cursor: pointer; transition: 0.3s; margin-bottom: 5px; }
+        .track-item:hover { background: #282828; }
+        .track-item img { width: 50px; height: 50px; border-radius: 4px; object-fit: cover; }
+        .track-info { flex-grow: 1; text-align: left; }
+        .track-info b { display: block; font-size: 0.95em; }
+        .track-info small { color: #b3b3b3; }
+
+        /* സ്പെഷ്യൽ ബോട്ടം പ്ലെയർ (നിങ്ങൾ ആവശ്യപ്പെട്ടത്) */
+        .bottom-player {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #181818; border-top: 1px solid #282828;
+            padding: 10px 20px; display: flex; align-items: center;
+            justify-content: space-between; z-index: 2000;
+            backdrop-filter: blur(10px); display: none; /* പാട്ട് പ്ലേ ചെയ്യുമ്പോൾ മാത്രം കാണിക്കും */
+        }
+        .player-info { display: flex; align-items: center; gap: 12px; width: 30%; }
+        .player-info img { width: 55px; height: 55px; border-radius: 4px; border: 1px solid #333; }
+        .player-controls { width: 40%; text-align: center; }
+        .player-stats { width: 25%; display: flex; justify-content: flex-end; gap: 20px; align-items: center; }
         
-        .player-stats { display: flex; justify-content: space-around; align-items: center; margin: 15px 0; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px; }
-        .like-btn-player { cursor: pointer; transition: 0.3s; font-size: 1.2em; }
-        .like-btn-player.liked { color: #ff4757; }
+        audio { height: 35px; width: 100%; filter: invert(100%); opacity: 0.8; }
+        .like-icon { font-size: 1.4em; cursor: pointer; color: #b3b3b3; transition: 0.3s; }
+        .like-icon.liked { color: #1DB954; }
+        .view-box { font-size: 0.8em; color: #b3b3b3; }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
 
-    <div class="live-indicator hidden" id="live-box">
-        <div class="dot"></div>
-        Live: <span id="live-count">0</span>
-    </div>
+    <div class="live-indicator hidden" id="live-box"><span class="dot"></span>Live: <span id="live-count">0</span></div>
 
-    <h1>A ONE MUSIC ✓</h1>
+    <div class="main-container">
+        <h1>A ONE MUSIC ✓</h1>
 
-    <div id="auth-section" class="card">
-        <h3>Login / Sign Up</h3>
-        <input type="text" id="auth-username" placeholder="Full Name">
-        <input type="email" id="auth-email" placeholder="Email">
-        <input type="password" id="auth-password" placeholder="Password">
-        <button class="btn" onclick="handleAuth()">Continue</button>
-    </div>
-
-    <div id="app-content" class="hidden">
-        <div class="card" style="display:flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
-            <b id="user-welcome"></b>
-            <button onclick="logout()" style="background:none; border:none; color:#ff4d4d; cursor:pointer;">Logout</button>
+        <div id="auth-section" class="card">
+            <h3>Login / Join</h3>
+            <input type="text" id="auth-username" placeholder="Your Name">
+            <input type="email" id="auth-email" placeholder="Email">
+            <input type="password" id="auth-password" placeholder="Password">
+            <button class="btn" onclick="handleAuth()">Continue</button>
         </div>
 
-        <div style="margin-bottom: 30px;">
-            <button class="fab-btn" onclick="toggleUploadForm()"><i class="fas fa-plus"></i></button>
-            <div id="upload-form" class="card">
-                <h4>Upload New Song</h4>
+        <div id="app-content" class="hidden">
+            <div style="display:flex; justify-content: space-between; margin-bottom: 20px;">
+                <b id="user-welcome"></b>
+                <button onclick="logout()" style="background:none; border:none; color:#ff4d4d; cursor:pointer;">Logout</button>
+            </div>
+
+            <button class="btn" style="margin-bottom:20px;" onclick="toggleUpload()"><i class="fa fa-plus"></i> Add New Song</button>
+            
+            <div id="upload-form" class="card hidden">
                 <input type="text" id="song-name" placeholder="Song Name">
-                <input type="text" id="singer-name" placeholder="Singer Name">
-                <button class="btn" style="background: #6c757d;" onclick="pickFile('image')"><i class="fas fa-image"></i> Choose Logo</button>
-                <button class="btn" style="background: #6c757d;" onclick="pickFile('video')"><i class="fas fa-file-audio"></i> Choose Music</button>
-                <button id="publish-btn" class="btn" style="background:var(--success); display: none;" onclick="saveSongData()">Publish Song</button>
+                <input type="text" id="singer-name" placeholder="Artist Name">
+                <button class="btn" style="background:#444; color:white; margin-bottom:10px;" onclick="pickFile('image')">Choose Logo</button>
+                <button class="btn" style="background:#444; color:white;" onclick="pickFile('video')">Choose Audio</button>
+                <button id="pub-btn" class="btn" style="margin-top:15px; display:none;" onclick="saveSong()">Publish</button>
+            </div>
+
+            <div id="track-list"></div>
+        </div>
+    </div>
+
+    <div class="bottom-player" id="main-player">
+        <div class="player-info">
+            <img id="p-img" src="">
+            <div class="track-info">
+                <b id="p-title">Song Title</b>
+                <small id="p-artist">Artist Name</small>
             </div>
         </div>
 
-        <div class="container">
-            <div class="box">
-                <h3>Global Playlist 💿</h3>
-                <div id="track-list"></div>
-            </div>
+        <div class="player-controls">
+            <audio id="audio-el" controls></audio>
+        </div>
 
-            <div class="box">
-                <img id="player-img" src="songlogo.jpg" style="width: 100%; border-radius: 15px; max-height: 250px; object-fit: cover;">
-                <h4 id="player-title" style="margin: 15px 0 5px;">Select a song</h4>
-                <p id="player-artist" style="color: #bbb; font-size: 0.85em;"></p>
-                
-                <div class="player-stats">
-                    <div><i class="fas fa-eye"></i> <span id="view-count">0</span></div>
-                    <div class="like-btn-player" id="main-like-btn" onclick="handleLike()">
-                        <i class="fas fa-heart"></i> <span id="like-count">0</span>
-                    </div>
-                </div>
-
-                <audio id="audio-player" controls style="width: 100%;"></audio>
-            </div>
+        <div class="player-stats">
+            <div class="view-box"><i class="fa fa-eye"></i> <span id="p-views">0</span></div>
+            <i class="fa fa-heart like-icon" id="p-like-btn" onclick="handleLike()"></i>
+            <span id="p-likes" style="font-size:0.8em; margin-left:-15px;">0</span>
         </div>
     </div>
 
@@ -99,6 +111,7 @@
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getDatabase, ref, set, push, onValue, runTransaction, get, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+        // നിങ്ങളുടെ ഫയർബേസ് കോൺഫിഗറേഷൻ
         const firebaseConfig = {
             apiKey: "AIzaSyAthFMO8zGT5BtiOkh4zkc71jL06LR_F9c",
             authDomain: "a-one-chat-19ad6.firebaseapp.com",
@@ -113,129 +126,86 @@
         const auth = getAuth(app);
         const rtdb = getDatabase(app);
 
-        let songUrl = "", logoUrl = "songlogo.jpg", currentSongId = null, songList = [];
+        let songU = "", logoU = "", curId = null, allS = [];
 
-        // Auth Logic
+        // Auth
         window.handleAuth = async () => {
-            const email = document.getElementById('auth-email').value;
-            const password = document.getElementById('auth-password').value;
-            const name = document.getElementById('auth-username').value;
-            try {
-                const cred = await createUserWithEmailAndPassword(auth, email, password);
-                await updateProfile(cred.user, { displayName: name });
-            } catch (e) { signInWithEmailAndPassword(auth, email, password).catch(err => alert(err.message)); }
+            const e = document.getElementById('auth-email').value, p = document.getElementById('auth-password').value, n = document.getElementById('auth-username').value;
+            try { let c = await createUserWithEmailAndPassword(auth, e, p); await updateProfile(c.user, {displayName: n}); }
+            catch { signInWithEmailAndPassword(auth, e, p).catch(err => alert(err.message)); }
         };
 
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
+        onAuthStateChanged(auth, u => {
+            if(u){
                 document.getElementById('auth-section').classList.add('hidden');
                 document.getElementById('app-content').classList.remove('hidden');
                 document.getElementById('live-box').classList.remove('hidden');
-                document.getElementById('user-welcome').innerText = "Hi, " + user.displayName;
-                loadSongs();
-                setupPresence(user);
-            } else {
-                document.getElementById('auth-section').classList.remove('hidden');
-                document.getElementById('app-content').classList.add('hidden');
-                document.getElementById('live-box').classList.add('hidden');
-            }
+                document.getElementById('user-welcome').innerText = "Hello, " + u.displayName;
+                loadTracks(); setupPresence(u);
+            } else { location.reload(); }
         });
 
-        // ലൈവ് കൗണ്ട് സംവിധാനം
-        function setupPresence(user) {
-            const myStatusRef = ref(rtdb, 'status/' + user.uid);
-            const connectedRef = ref(rtdb, '.info/connected');
-
-            onValue(connectedRef, (snap) => {
-                if (snap.val() === true) {
-                    onDisconnect(myStatusRef).remove();
-                    set(myStatusRef, { name: user.displayName, online: true });
-                }
-            });
-
-            onValue(ref(rtdb, 'status'), (snap) => {
-                document.getElementById('live-count').innerText = snap.size || 0;
-            });
+        // Presence
+        function setupPresence(u) {
+            const sRef = ref(rtdb, 'status/' + u.uid);
+            onValue(ref(rtdb, '.info/connected'), s => { if(s.val()){ onDisconnect(sRef).remove(); set(sRef, {online:true}); }});
+            onValue(ref(rtdb, 'status'), s => { document.getElementById('live-count').innerText = s.size || 0; });
         }
 
         window.logout = () => signOut(auth);
-        window.toggleUploadForm = () => {
-            const form = document.getElementById('upload-form');
-            form.style.display = form.style.display === "block" ? "none" : "block";
-        };
+        window.toggleUpload = () => document.getElementById('upload-form').classList.toggle('hidden');
 
-        window.pickFile = (type) => {
-            cloudinary.openUploadWidget({ cloudName: "dcsczlahu", uploadPreset: "ml_default", resourceType: type }, (err, res) => {
-                if (!err && res.event === "success") {
-                    if (type === 'image') logoUrl = res.info.secure_url;
-                    else songUrl = res.info.secure_url;
-                    if (songUrl) document.getElementById('publish-btn').style.display = "block";
+        window.pickFile = t => {
+            cloudinary.openUploadWidget({cloudName:"dcsczlahu", uploadPreset:"ml_default", resourceType:t}, (e, r) => {
+                if(!e && r.event==="success"){
+                    if(t==='image') logoU = r.info.secure_url; else songU = r.info.secure_url;
+                    if(songU) document.getElementById('pub-btn').style.display = "block";
                 }
             });
         };
 
-        window.saveSongData = () => {
-            const name = document.getElementById('song-name').value;
-            const artist = document.getElementById('singer-name').value;
-            if(!name || !artist || !songUrl) return alert("Fill details!");
-            push(ref(rtdb, 'songs'), { title: name, artist: artist, logo: logoUrl, url: songUrl, uploader: auth.currentUser.displayName, views: 0, likes: {} })
-            .then(() => location.reload());
+        window.saveSong = () => {
+            const n = document.getElementById('song-name').value, a = document.getElementById('singer-name').value;
+            push(ref(rtdb, 'songs'), {title:n, artist:a, logo:logoU, url:songU, views:0, likes:{}}).then(()=>location.reload());
         };
 
-        function loadSongs() {
-            onValue(ref(rtdb, 'songs'), (snap) => {
-                const list = document.getElementById('track-list');
-                list.innerHTML = ""; songList = [];
-                snap.forEach((child) => {
-                    const song = child.val();
-                    const songId = child.key;
-                    songList.push({ id: songId, ...song });
-                    list.innerHTML += `
-                        <div class="track-item" onclick="playSong('${songId}')">
-                            <img src="${song.logo}" onerror="this.src='songlogo.jpg'">
-                            <div><strong>${song.title}</strong><br><small>${song.artist}</small></div>
-                        </div>`;
+        function loadTracks() {
+            onValue(ref(rtdb, 'songs'), snap => {
+                const list = document.getElementById('track-list'); list.innerHTML = ""; allS = [];
+                snap.forEach(c => {
+                    const s = c.val(), id = c.key; allS.push({id, ...s});
+                    list.innerHTML += `<div class="track-item" onclick="playT('${id}')"><img src="${s.logo || ''}"> <div class="track-info"><b>${s.title}</b><small>${s.artist}</small></div></div>`;
                 });
             });
         }
 
-        window.playSong = (id) => {
-            currentSongId = id;
-            onValue(ref(rtdb, `songs/${id}`), (snap) => {
-                const song = snap.val();
-                if(!song) return;
-                document.getElementById('player-title').innerText = song.title;
-                document.getElementById('player-artist').innerText = song.artist;
-                document.getElementById('player-img').src = song.logo;
-                document.getElementById('view-count').innerText = song.views || 0;
-                document.getElementById('like-count').innerText = song.likes ? Object.keys(song.likes).length : 0;
+        window.playT = id => {
+            curId = id;
+            document.getElementById('main-player').style.display = "flex";
+            onValue(ref(rtdb, `songs/${id}`), snap => {
+                const s = snap.val(); if(!s) return;
+                document.getElementById('p-title').innerText = s.title;
+                document.getElementById('p-artist').innerText = s.artist;
+                document.getElementById('p-img').src = s.logo;
+                document.getElementById('p-views').innerText = s.views || 0;
+                const L = s.likes || {};
+                document.getElementById('p-likes').innerText = Object.keys(L).length;
+                document.getElementById('p-like-btn').className = L[auth.currentUser.uid] ? "fa fa-heart like-icon liked" : "fa fa-heart like-icon";
                 
-                const likeBtn = document.getElementById('main-like-btn');
-                if (song.likes && song.likes[auth.currentUser.uid]) likeBtn.classList.add('liked');
-                else likeBtn.classList.remove('liked');
-
-                const audio = document.getElementById('audio-player');
-                if(audio.src !== song.url) {
-                    audio.src = song.url;
-                    audio.play();
-                    runTransaction(ref(rtdb, `songs/${id}/views`), (v) => (v || 0) + 1);
-                }
-            }, { onlyOnce: true });
+                const au = document.getElementById('audio-el');
+                if(au.src !== s.url){ au.src = s.url; au.play(); runTransaction(ref(rtdb, `songs/${id}/views`), v => (v||0)+1); }
+            });
         };
 
-        document.getElementById('audio-player').onended = () => {
-            let idx = songList.findIndex(s => s.id === currentSongId);
-            if (idx !== -1 && idx < songList.length - 1) playSong(songList[idx + 1].id);
+        document.getElementById('audio-el').onended = () => {
+            let i = allS.findIndex(s => s.id === curId);
+            if(i !== -1 && i < allS.length - 1) playT(allS[i+1].id);
         };
 
         window.handleLike = () => {
-            if(!currentSongId) return;
-            const uid = auth.currentUser.uid;
-            const likeRef = ref(rtdb, `songs/${currentSongId}/likes/${uid}`);
-            get(likeRef).then(snap => {
-                if (snap.exists()) set(likeRef, null);
-                else set(likeRef, true);
-            });
+            if(!curId) return;
+            const r = ref(rtdb, `songs/${curId}/likes/${auth.currentUser.uid}`);
+            get(r).then(s => { if(s.exists()) set(r, null); else set(r, true); });
         };
     </script>
 </body>
