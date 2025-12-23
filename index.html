@@ -3,43 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A ONE MUSIC - PRO EDITION</title>
-    
+    <title>A ONE MUSIC - VERIFIED EDITION</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
-
     <style>
         :root { --primary: #1DB954; --bg: #0b0b0d; --card: #18181b; --text: #ffffff; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; padding-bottom: 160px; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; overflow-x: hidden; }
         
         /* Header */
-        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: sticky; top: 0; background: rgba(11, 11, 13, 0.9); backdrop-filter: blur(10px); z-index: 1000; border-bottom: 1px solid #27272a; }
-        .user-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; cursor: pointer; border: 2px solid var(--primary); }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; position: sticky; top: 0; background: rgba(11, 11, 13, 0.95); backdrop-filter: blur(10px); z-index: 1000; border-bottom: 1px solid #27272a; }
+        .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--primary); cursor: pointer; object-fit: cover; }
 
-        .container { max-width: 500px; margin: 0 auto; padding: 15px; }
+        .container { max-width: 500px; margin: 0 auto; padding: 15px; padding-bottom: 100px; }
         .card { background: var(--card); border-radius: 12px; padding: 18px; margin-bottom: 15px; border: 1px solid #27272a; }
-        
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #27272a; color: white; box-sizing: border-box; outline: none; }
-        .btn { background: var(--primary); color: black; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; transition: 0.2s; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: none; background: #27272a; color: white; outline: none; }
+        .btn { background: var(--primary); color: black; border: none; padding: 12px; border-radius: 8px; font-weight: bold; width: 100%; cursor: pointer; }
 
-        .track-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; cursor: pointer; transition: 0.3s; margin-bottom: 5px; }
+        /* Track List */
+        .track-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
         .track-item:hover { background: #27272a; }
-        .track-item img { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; }
+        .track-item img { width: 50px; height: 50px; border-radius: 5px; object-fit: cover; }
+
+        /* Full Screen Player */
+        .full-player { position: fixed; inset: 0; background: linear-gradient(to bottom, #2a2a2a, #0b0b0d); z-index: 5000; display: none; flex-direction: column; padding: 30px; animation: slideUp 0.4s ease-out; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
-        /* Overlays */
+        .player-controls { display: flex; justify-content: space-around; align-items: center; width: 100%; margin-top: 30px; }
+        .player-controls i { font-size: 1.8em; cursor: pointer; }
+        .play-btn-large { font-size: 4em !important; color: var(--primary); }
+
         .overlay { position: fixed; inset: 0; background: var(--bg); z-index: 4000; display: none; padding: 20px; overflow-y: auto; }
-        .close-btn { font-size: 1.5em; cursor: pointer; margin-bottom: 20px; display: block; color: #aaa; }
-
-        /* Player */
-        .bottom-player { position: fixed; bottom: 0; left: 0; right: 0; background: #121212; border-top: 1px solid #27272a; z-index: 2000; padding: 10px 20px 25px 20px; display: none; flex-direction: column; }
-        .p-content { display: flex; align-items: center; gap: 12px; }
-        .p-img { width: 45px; height: 45px; border-radius: 6px; }
-        .p-info { flex-grow: 1; overflow: hidden; }
-        .p-info b { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        .seek-area { width: 100%; margin-top: 10px; display: flex; align-items: center; gap: 10px; font-size: 0.7em; color: #888; }
-        #seek-bar { flex-grow: 1; accent-color: var(--primary); height: 4px; cursor: pointer; }
-
         .verified { color: #1d9bf0; margin-left: 5px; font-size: 0.9em; }
         .hidden { display: none; }
     </style>
@@ -47,81 +40,93 @@
 <body>
 
     <div class="header">
-        <img id="my-avatar" class="user-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" onclick="openProfile('self')">
-        <h3 style="margin:0; color: var(--primary);">A ONE</h3>
-        <i class="fas fa-cog" style="font-size: 1.4em; cursor:pointer; color:#888;" onclick="toggleUI('settings-ui', true)"></i>
+        <img id="my-avatar" class="user-avatar" src="" onclick="openProfile('self')">
+        <h3 style="margin:0; color: var(--primary); letter-spacing: 1px;">A ONE</h3>
+        <i class="fas fa-cog" style="font-size: 1.4em; cursor:pointer; color: #888;" onclick="toggleUI('settings-ui', true)"></i>
     </div>
 
     <div class="container">
         <div id="auth-box" class="card">
-            <h2 style="text-align: center;">Join A ONE</h2>
+            <h2 style="text-align: center;">Welcome to A ONE</h2>
             <input type="text" id="a-name" placeholder="Full Name">
-            <input type="email" id="a-email" placeholder="Email">
+            <input type="email" id="a-email" placeholder="Email Address">
             <input type="password" id="a-pass" placeholder="Password">
-            <button class="btn" onclick="authAction()">Join Now</button>
+            <button class="btn" onclick="authAction()">Continue</button>
         </div>
 
         <div id="app-box" class="hidden">
-            <input type="text" id="search" placeholder="Search songs, artists..." oninput="filter()" class="card" style="width:100%;">
+            <input type="text" id="search" placeholder="Search for music..." oninput="filter()">
             <div id="track-list"></div>
         </div>
     </div>
 
-    <div id="settings-ui" class="overlay">
-        <i class="fas fa-times close-btn" onclick="toggleUI('settings-ui', false)"></i>
-        <div class="container">
-            <h2 style="margin-bottom:20px;">Settings</h2>
-            
-            <div class="card" style="background: #1a1a1a;">
-                <h4 style="margin-top:0;"><i class="fas fa-upload" style="margin-right:10px; color:var(--primary);"></i> Upload Song</h4>
-                <input type="text" id="s-title" placeholder="Song Title">
-                <input type="text" id="s-artist" placeholder="Artist Name">
-                <button class="btn" style="background:#333; color:white; margin-bottom:10px;" onclick="pick('l')">Select Logo</button>
-                <button class="btn" style="background:#333; color:white;" onclick="pick('s')">Select Audio</button>
-                <button id="pub-btn" class="btn" style="margin-top:20px; display:none;" onclick="publish()">Publish Song</button>
-            </div>
+    <div id="full-player-ui" class="full-player">
+        <i class="fas fa-chevron-down" style="font-size: 1.5em; cursor: pointer;" onclick="toggleUI('full-player-ui', false)"></i>
+        
+        <div style="text-align: center; margin-top: 40px;">
+            <img id="fp-img" style="width: 280px; height: 280px; border-radius: 15px; object-fit: cover; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+            <h2 id="fp-title" style="margin: 25px 0 5px 0;"></h2>
+            <p id="fp-art" style="color: #b3b3b3; font-size: 1.1em;"></p>
+        </div>
 
-            <div class="card" style="background: #1a1a1a; margin-top:20px;">
-                <h4>Account</h4>
-                <button class="btn" style="background:#f43f5e; color:white;" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        <div style="margin-top: 30px;">
+            <input type="range" id="fp-seek" value="0" style="width: 100%; accent-color: var(--primary);">
+            <div style="display: flex; justify-content: space-between; font-size: 0.8em; color: #888; margin-top: 5px;">
+                <span id="fp-cur">0:00</span>
+                <span id="fp-dur">0:00</span>
             </div>
+        </div>
+
+        <div class="player-controls">
+            <i class="fas fa-random" style="color:#555;"></i>
+            <i class="fas fa-step-backward" onclick="nextPrev(-1)"></i>
+            <i class="fas fa-play-circle play-btn-large" id="fp-play" onclick="togglePlay()"></i>
+            <i class="fas fa-step-forward" onclick="nextPrev(1)"></i>
+            <i class="fas fa-redo" style="color:#555;"></i>
+        </div>
+
+        <div class="card" style="margin-top: 40px; display: flex; align-items: center; justify-content: space-between; background: rgba(255,255,255,0.05);">
+            <div style="display: flex; align-items: center; gap: 12px; cursor:pointer;" id="uploader-link">
+                <img id="fp-up-img" style="width: 45px; height: 45px; border-radius: 50%; object-fit: cover;">
+                <div>
+                    <b id="fp-up-name"></b> <p id="fp-up-fol" style="font-size: 0.7em; color: #888; margin: 0;"></p>
+                </div>
+            </div>
+            <button id="fp-fol-btn" class="btn" style="width: 90px; padding: 6px; font-size: 0.8em; border-radius: 20px;" onclick="handleFollow()">Follow</button>
         </div>
     </div>
 
     <div id="profile-ui" class="overlay">
-        <i class="fas fa-chevron-left close-btn" onclick="toggleUI('profile-ui', false)"></i>
-        <div style="text-align:center;">
-            <div style="position:relative; display:inline-block;">
-                <img id="view-p-img" style="width:110px; height:110px; border-radius:50%; object-fit:cover; border:3px solid var(--primary);">
-                <div id="edit-pic-btn" onclick="updatePic()" style="position:absolute; bottom:0; right:0; background:var(--primary); padding:8px; border-radius:50%; cursor:pointer; display:none;"><i class="fas fa-camera" style="color:black; font-size:0.8em;"></i></div>
+        <i class="fas fa-arrow-left" style="font-size: 1.5em; cursor:pointer;" onclick="toggleUI('profile-ui', false)"></i>
+        <div style="text-align: center; margin-top: 10px;">
+            <div style="position: relative; display: inline-block;">
+                <img id="view-p-img" style="width: 110px; height: 110px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary);">
+                <div id="edit-pic-icon" onclick="updatePic()" style="position: absolute; bottom: 0; right: 0; background: var(--primary); padding: 7px; border-radius: 50%; display: none; cursor:pointer;"><i class="fas fa-camera" style="color: black; font-size: 0.8em;"></i></div>
             </div>
-            <h2 id="view-p-name" style="margin:15px 0 5px 0;"></h2>
-            <p id="view-p-fol" style="color:#888;">0 Followers</p>
-            <button id="fol-btn" class="btn" style="width:140px; border-radius:25px; margin:10px auto;" onclick="handleFollow()">Follow</button>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px;">
+                <h2 id="view-p-name" style="margin: 0;"></h2> <i id="edit-name-icon" class="fas fa-pen" style="color: #888; cursor:pointer; display: none; font-size: 0.8em;" onclick="editUsername()"></i>
+            </div>
+            <p id="view-p-fol" style="color: #888; margin-top: 5px;"></p>
+            <button id="main-fol-btn" class="btn" style="width: 130px; border-radius: 25px; display: none; margin: 10px auto;" onclick="handleFollow()">Follow</button>
         </div>
-        <div id="user-songs" style="margin-top:30px;"></div>
+        <div id="user-songs" style="margin-top: 30px;"></div>
     </div>
 
-    <div class="bottom-player" id="player">
-        <div class="p-content">
-            <img id="p-img" class="p-img">
-            <div class="p-info">
-                <b id="p-title"></b>
-                <span id="p-art" style="font-size:0.8em; color:#888;"></span>
-            </div>
-            <div style="display:flex; gap:15px; align-items:center;">
-                <i class="fa fa-eye" style="font-size:0.75em; color:#555;"> <span id="p-views">0</span></i>
-                <i class="fas fa-heart" id="p-heart" style="cursor:pointer;" onclick="like()"></i>
-                <i class="fas fa-play" id="p-play" style="font-size:1.2em; cursor:pointer;" onclick="togglePlay()"></i>
-            </div>
+    <div id="settings-ui" class="overlay">
+        <i class="fas fa-times" style="font-size: 1.5em; cursor:pointer;" onclick="toggleUI('settings-ui', false)"></i>
+        <h2>Settings</h2>
+        <div class="card">
+            <h4>Upload Your Music</h4>
+            <input type="text" id="s-title" placeholder="Song Name">
+            <input type="text" id="s-artist" placeholder="Artist Name">
+            <button class="btn" style="background: #333; color: white; margin-bottom: 8px;" onclick="pick('l')">Select Logo</button>
+            <button class="btn" style="background: #333; color: white;" onclick="pick('s')">Select Audio</button>
+            <button id="pub-btn" class="btn" style="margin-top: 15px; display: none;" onclick="publish()">Publish to A ONE</button>
         </div>
-        <div class="seek-area">
-            <span id="cur-time">0:00</span>
-            <input type="range" id="seek-bar" value="0">
-            <span id="dur-time">0:00</span>
-        </div>
-        <audio id="audio"></audio>
+        <button class="btn" style="background: #f43f5e; color: white;" onclick="logout()">Logout Account</button>
     </div>
+
+    <audio id="audio-player"></audio>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -143,10 +148,12 @@
         const rtdb = getDatabase(app);
 
         let tempL = "", tempS = "", songs = [], curId = null, viewUid = null;
+        const audio = document.getElementById('audio-player');
+        const blueTickHtml = `<i class="fas fa-check-circle verified"></i>`;
 
-        window.toggleUI = (id, show) => document.getElementById(id).style.display = show ? 'block' : 'none';
+        window.toggleUI = (id, show) => document.getElementById(id).style.display = show ? 'flex' : 'none';
 
-        // Auth
+        // AUTH
         window.authAction = async () => {
             const e = document.getElementById('a-email').value, p = document.getElementById('a-pass').value, n = document.getElementById('a-name').value;
             try { 
@@ -165,13 +172,13 @@
             }
         });
 
-        // Cloudinary
+        // UPLOAD
         window.pick = (m) => {
             cloudinary.openUploadWidget({cloudName:"dcsczlahu", uploadPreset:"ml_default", resourceType: m==='s'?'video':'image'}, (err, res) => {
                 if(!err && res.event === "success"){
                     if(m==='l') tempL = res.info.secure_url;
                     if(m==='s') { tempS = res.info.secure_url; document.getElementById('pub-btn').style.display='block'; }
-                    alert("Selection successful!");
+                    alert("Selected!");
                 }
             });
         };
@@ -180,7 +187,7 @@
             push(ref(rtdb, 'songs'), { 
                 title: document.getElementById('s-title').value, artist: document.getElementById('s-artist').value, 
                 logo: tempL, url: tempS, uid: auth.currentUser.uid, up: auth.currentUser.displayName, 
-                up_p: auth.currentUser.photoURL, views: 0 
+                up_p: auth.currentUser.photoURL, views: 0
             });
             alert("Published!");
             toggleUI('settings-ui', false);
@@ -194,92 +201,124 @@
         }
 
         window.filter = () => {
-            const q = document.getElementById('search').value.toLowerCase();
             const list = document.getElementById('track-list'); list.innerHTML = "";
-            songs.filter(s => s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q)).forEach(s => {
+            const q = document.getElementById('search').value.toLowerCase();
+            songs.filter(s => s.title.toLowerCase().includes(q)).forEach(s => {
+                const isVerified = s.views >= 1000;
                 list.innerHTML += `
-                <div class="track-item" onclick="playT('${s.id}')">
+                <div class="track-item" onclick="playSong('${s.id}')">
                     <img src="${s.logo}">
-                    <div style="flex-grow:1;">
+                    <div>
                         <b>${s.title}</b>
-                        <div style="font-size:0.75em; color:#888;" onclick="event.stopPropagation(); openProfile('${s.uid}')">
-                            ${s.up} <i class="fas fa-check-circle verified"></i>
-                        </div>
+                        <p style="margin:0;font-size:0.8em;color:#888;">${s.artist} ${isVerified ? blueTickHtml : ""}</p>
                     </div>
                 </div>`;
             });
         };
 
-        window.playT = (id) => {
-            curId = id; document.getElementById('player').style.display = "flex";
+        // PLAY LOGIC
+        window.playSong = (id) => {
+            curId = id;
             const s = songs.find(x => x.id === id);
-            document.getElementById('p-title').innerText = s.title;
-            document.getElementById('p-art').innerText = s.artist;
-            document.getElementById('p-img').src = s.logo;
+            const isVerified = s.views >= 1000;
 
-            const au = document.getElementById('audio');
-            if(au.src !== s.url){ 
-                au.src = s.url; au.play(); 
-                runTransaction(ref(rtdb, `songs/${id}/views`), v => (v||0)+1);
-            }
+            document.getElementById('fp-title').innerText = s.title;
+            document.getElementById('fp-art').innerText = s.artist;
+            document.getElementById('fp-img').src = s.logo;
+            document.getElementById('fp-up-name').innerHTML = s.up + (isVerified ? " " + blueTickHtml : "");
+            document.getElementById('fp-up-img').src = s.up_p;
             
-            onValue(ref(rtdb, `songs/${id}/views`), snap => document.getElementById('p-views').innerText = snap.val() || 0);
-            onValue(ref(rtdb, `songs/${id}/likes/${auth.currentUser.uid}`), s => document.getElementById('p-heart').style.color = s.exists() ? "var(--primary)" : "white");
+            viewUid = s.uid;
+            updateFollowInfo();
+            
+            if(audio.src !== s.url) { 
+                audio.src = s.url; audio.play(); 
+                runTransaction(ref(rtdb, `songs/${id}/views`), v => (v || 0) + 1);
+            }
+            toggleUI('full-player-ui', true);
+            document.getElementById('fp-play').className = "fas fa-pause-circle play-btn-large";
         };
 
-        // Audio Logic
-        const au = document.getElementById('audio');
-        const sb = document.getElementById('seek-bar');
-        au.ontimeupdate = () => {
-            sb.max = au.duration; sb.value = au.currentTime;
-            document.getElementById('cur-time').innerText = fmt(au.currentTime);
-            document.getElementById('dur-time').innerText = fmt(au.duration);
-        };
-        sb.oninput = () => au.currentTime = sb.value;
         window.togglePlay = () => {
-            if(au.paused) { au.play(); document.getElementById('p-play').className="fas fa-pause"; }
-            else { au.pause(); document.getElementById('p-play').className="fas fa-play"; }
+            if(audio.paused) { audio.play(); document.getElementById('fp-play').className="fas fa-pause-circle play-btn-large"; }
+            else { audio.pause(); document.getElementById('fp-play').className="fas fa-play-circle play-btn-large"; }
         };
+
+        // Seek Bar
+        const sb = document.getElementById('fp-seek');
+        audio.ontimeupdate = () => {
+            sb.max = audio.duration; sb.value = audio.currentTime;
+            document.getElementById('fp-cur').innerText = fmt(audio.currentTime);
+            document.getElementById('fp-dur').innerText = fmt(audio.duration);
+        };
+        sb.oninput = () => audio.currentTime = sb.value;
         function fmt(s) { let m=Math.floor(s/60), sec=Math.floor(s%60); return `${m}:${sec<10?'0'+sec:sec}`; }
 
-        // Profile Logic
+        // PROFILE & EDIT
         window.openProfile = (uid) => {
             viewUid = uid === 'self' ? auth.currentUser.uid : uid;
-            const uData = songs.find(s => s.uid === viewUid) || {up: auth.currentUser.displayName, up_p: auth.currentUser.photoURL};
+            const isMe = viewUid === auth.currentUser.uid;
+            const hasVerifiedSong = songs.some(s => s.uid === viewUid && s.views >= 1000);
+
+            onValue(ref(rtdb, `users/${viewUid}`), snap => {
+                const uData = snap.val() || songs.find(s => s.uid === viewUid);
+                document.getElementById('view-p-name').innerHTML = (uData?.up || auth.currentUser.displayName) + (hasVerifiedSong ? " " + blueTickHtml : "");
+                document.getElementById('view-p-img').src = uData?.up_p || auth.currentUser.photoURL;
+            });
+
+            document.getElementById('edit-pic-icon').style.display = isMe ? 'block' : 'none';
+            document.getElementById('edit-name-icon').style.display = isMe ? 'block' : 'none';
+            document.getElementById('main-fol-btn').style.display = isMe ? 'none' : 'block';
             
-            document.getElementById('view-p-name').innerText = uData.up;
-            document.getElementById('view-p-img').src = uData.up_p;
-            document.getElementById('edit-pic-btn').style.display = viewUid === auth.currentUser.uid ? 'block' : 'none';
-            document.getElementById('fol-btn').style.display = viewUid === auth.currentUser.uid ? 'none' : 'block';
-
-            onValue(ref(rtdb, `users/${viewUid}/followers`), snap => {
-                document.getElementById('view-p-fol').innerText = (snap.size || 0) + " Followers";
-                document.getElementById('fol-btn').innerText = snap.hasChild(auth.currentUser.uid) ? "Following" : "Follow";
-            });
-
-            const uList = document.getElementById('user-songs'); uList.innerHTML = "<h4>Tracks</h4>";
+            updateFollowInfo();
+            
+            const uList = document.getElementById('user-songs'); uList.innerHTML = "<h4 style='margin-left:10px;'>Tracks</h4>";
             songs.filter(s => s.uid === viewUid).forEach(s => {
-                uList.innerHTML += `<div class="track-item" onclick="playT('${s.id}')"><img src="${s.logo}"><b>${s.title}</b></div>`;
+                uList.innerHTML += `<div class="track-item" onclick="playSong('${s.id}')"><img src="${s.logo}"><b>${s.title}</b></div>`;
             });
+
             toggleUI('profile-ui', true);
         };
 
-        window.handleFollow = () => {
-            const fRef = ref(rtdb, `users/${viewUid}/followers/${auth.currentUser.uid}`);
-            get(fRef).then(s => s.exists() ? remove(fRef) : set(fRef, true));
+        window.editUsername = () => {
+            const newName = prompt("Enter new name:");
+            if(newName) {
+                updateProfile(auth.currentUser, { displayName: newName }).then(() => {
+                    set(ref(rtdb, `users/${auth.currentUser.uid}/up`), newName);
+                    location.reload();
+                });
+            }
         };
 
         window.updatePic = () => {
             cloudinary.openUploadWidget({cloudName:"dcsczlahu", uploadPreset:"ml_default"}, (err, res) => {
                 if(!err && res.event === "success"){
-                    updateProfile(auth.currentUser, { photoURL: res.info.secure_url }).then(() => location.reload());
+                    const url = res.info.secure_url;
+                    updateProfile(auth.currentUser, { photoURL: url }).then(() => {
+                        set(ref(rtdb, `users/${auth.currentUser.uid}/up_p`), url);
+                        location.reload();
+                    });
                 }
             });
         };
 
-        window.like = () => {
-            const lRef = ref(rtdb, `songs/${curId}/likes/${auth.currentUser.uid}`);
-            get(lRef).then(s => s.exists() ? remove(lRef) : set(lRef, true));
+        // FOLLOW LOGIC
+        function updateFollowInfo() {
+            onValue(ref(rtdb, `users/${viewUid}/followers`), snap => {
+                const count = snap.size || 0;
+                const isFollowing = snap.hasChild(auth.currentUser.uid);
+                document.getElementById('fp-up-fol').innerText = count + " Followers";
+                document.getElementById('view-p-fol').innerText = count + " Followers";
+                document.getElementById('fp-fol-btn').innerText = isFollowing ? "Following" : "Follow";
+                document.getElementById('main-fol-btn').innerText = isFollowing ? "Following" : "Follow";
+                document.getElementById('fp-fol-btn').style.background = isFollowing ? "#333" : "var(--primary)";
+                document.getElementById('fp-fol-btn').style.color = isFollowing ? "white" : "black";
+            });
+        }
+
+        window.handleFollow = () => {
+            const fRef = ref(rtdb, `users/${viewUid}/followers/${auth.currentUser.uid}`);
+            get(fRef).then(s => s.exists() ? remove(fRef) : set(fRef, true));
         };
 
         window.logout = () => signOut(auth).then(() => location.reload());
