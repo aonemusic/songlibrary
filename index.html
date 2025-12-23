@@ -3,13 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A ONE MUSIC - Premium Player</title>
+    <title>A ONE MUSIC - Professional</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 
     <style>
         :root { --primary: #007bff; --glass: rgba(255, 255, 255, 0.1); --border: rgba(255, 255, 255, 0.2); --success: #28a745; }
         body { font-family: 'Poppins', sans-serif; background: #0f0f12; color: white; margin: 0; padding: 20px; text-align: center; }
+        
+        /* ലൈവ് കൗണ്ട് ടോപ്പ് റൈറ്റ് സൈഡിൽ */
+        .live-indicator {
+            position: fixed; top: 15px; right: 15px; background: rgba(0, 0, 0, 0.6);
+            padding: 8px 15px; border-radius: 20px; font-size: 0.85em; border: 1px solid var(--border);
+            display: flex; align-items: center; gap: 8px; z-index: 2000;
+        }
+        .dot { width: 8px; height: 8px; background: #28a745; border-radius: 50%; animation: blink 1.5s infinite; }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+
         .card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--border); padding: 20px; border-radius: 15px; max-width: 400px; margin: 0 auto 20px; }
         input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; background: rgba(255,255,255,0.05); color: white; box-sizing: border-box; outline: none; }
         .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; margin-bottom: 10px; }
@@ -17,18 +27,21 @@
         #upload-form { display: none; margin-top: 15px; }
         .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
         .box { background: var(--glass); padding: 20px; border-radius: 15px; width: 350px; border: 1px solid var(--border); }
-        .track-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; }
+        .track-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; text-align: left; }
         .track-item img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
         .hidden { display: none; }
         
-        /* Player Stats Styling */
         .player-stats { display: flex; justify-content: space-around; align-items: center; margin: 15px 0; padding: 10px; background: rgba(0,0,0,0.3); border-radius: 10px; }
         .like-btn-player { cursor: pointer; transition: 0.3s; font-size: 1.2em; }
         .like-btn-player.liked { color: #ff4757; }
-        .view-stat { color: #aaa; font-size: 0.9em; }
     </style>
 </head>
 <body>
+
+    <div class="live-indicator hidden" id="live-box">
+        <div class="dot"></div>
+        Live: <span id="live-count">0</span>
+    </div>
 
     <h1>A ONE MUSIC ✓</h1>
 
@@ -49,7 +62,7 @@
         <div style="margin-bottom: 30px;">
             <button class="fab-btn" onclick="toggleUploadForm()"><i class="fas fa-plus"></i></button>
             <div id="upload-form" class="card">
-                <h4><i class="fas fa-upload"></i> New Song</h4>
+                <h4>Upload New Song</h4>
                 <input type="text" id="song-name" placeholder="Song Name">
                 <input type="text" id="singer-name" placeholder="Singer Name">
                 <button class="btn" style="background: #6c757d;" onclick="pickFile('image')"><i class="fas fa-image"></i> Choose Logo</button>
@@ -64,13 +77,13 @@
                 <div id="track-list"></div>
             </div>
 
-            <div class="box" id="music-player-box">
+            <div class="box">
                 <img id="player-img" src="songlogo.jpg" style="width: 100%; border-radius: 15px; max-height: 250px; object-fit: cover;">
                 <h4 id="player-title" style="margin: 15px 0 5px;">Select a song</h4>
                 <p id="player-artist" style="color: #bbb; font-size: 0.85em;"></p>
                 
                 <div class="player-stats">
-                    <div class="view-stat"><i class="fas fa-eye"></i> <span id="view-count">0</span></div>
+                    <div><i class="fas fa-eye"></i> <span id="view-count">0</span></div>
                     <div class="like-btn-player" id="main-like-btn" onclick="handleLike()">
                         <i class="fas fa-heart"></i> <span id="like-count">0</span>
                     </div>
@@ -84,7 +97,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getDatabase, ref, set, push, onValue, runTransaction, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, runTransaction, get, onDisconnect } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAthFMO8zGT5BtiOkh4zkc71jL06LR_F9c",
@@ -102,6 +115,7 @@
 
         let songUrl = "", logoUrl = "songlogo.jpg", currentSongId = null, songList = [];
 
+        // Auth Logic
         window.handleAuth = async () => {
             const email = document.getElementById('auth-email').value;
             const password = document.getElementById('auth-password').value;
@@ -116,13 +130,33 @@
             if (user) {
                 document.getElementById('auth-section').classList.add('hidden');
                 document.getElementById('app-content').classList.remove('hidden');
+                document.getElementById('live-box').classList.remove('hidden');
                 document.getElementById('user-welcome').innerText = "Hi, " + user.displayName;
                 loadSongs();
+                setupPresence(user);
             } else {
                 document.getElementById('auth-section').classList.remove('hidden');
                 document.getElementById('app-content').classList.add('hidden');
+                document.getElementById('live-box').classList.add('hidden');
             }
         });
+
+        // ലൈവ് കൗണ്ട് സംവിധാനം
+        function setupPresence(user) {
+            const myStatusRef = ref(rtdb, 'status/' + user.uid);
+            const connectedRef = ref(rtdb, '.info/connected');
+
+            onValue(connectedRef, (snap) => {
+                if (snap.val() === true) {
+                    onDisconnect(myStatusRef).remove();
+                    set(myStatusRef, { name: user.displayName, online: true });
+                }
+            });
+
+            onValue(ref(rtdb, 'status'), (snap) => {
+                document.getElementById('live-count').innerText = snap.size || 0;
+            });
+        }
 
         window.logout = () => signOut(auth);
         window.toggleUploadForm = () => {
@@ -143,7 +177,7 @@
         window.saveSongData = () => {
             const name = document.getElementById('song-name').value;
             const artist = document.getElementById('singer-name').value;
-            if(!name || !artist || !songUrl) return alert("Fill all details!");
+            if(!name || !artist || !songUrl) return alert("Fill details!");
             push(ref(rtdb, 'songs'), { title: name, artist: artist, logo: logoUrl, url: songUrl, uploader: auth.currentUser.displayName, views: 0, likes: {} })
             .then(() => location.reload());
         };
@@ -159,7 +193,7 @@
                     list.innerHTML += `
                         <div class="track-item" onclick="playSong('${songId}')">
                             <img src="${song.logo}" onerror="this.src='songlogo.jpg'">
-                            <div style="text-align:left"><strong>${song.title}</strong><br><small>${song.artist}</small></div>
+                            <div><strong>${song.title}</strong><br><small>${song.artist}</small></div>
                         </div>`;
                 });
             });
@@ -167,52 +201,42 @@
 
         window.playSong = (id) => {
             currentSongId = id;
-            const songRef = ref(rtdb, `songs/${id}`);
-            onValue(songRef, (snap) => {
+            onValue(ref(rtdb, `songs/${id}`), (snap) => {
                 const song = snap.val();
                 if(!song) return;
                 document.getElementById('player-title').innerText = song.title;
                 document.getElementById('player-artist').innerText = song.artist;
                 document.getElementById('player-img').src = song.logo;
                 document.getElementById('view-count').innerText = song.views || 0;
-                
-                const likes = song.likes || {};
-                document.getElementById('like-count').innerText = Object.keys(likes).length;
+                document.getElementById('like-count').innerText = song.likes ? Object.keys(song.likes).length : 0;
                 
                 const likeBtn = document.getElementById('main-like-btn');
-                if (likes[auth.currentUser.uid]) likeBtn.classList.add('liked');
+                if (song.likes && song.likes[auth.currentUser.uid]) likeBtn.classList.add('liked');
                 else likeBtn.classList.remove('liked');
 
                 const audio = document.getElementById('audio-player');
                 if(audio.src !== song.url) {
                     audio.src = song.url;
                     audio.play();
-                    // Increment Views
                     runTransaction(ref(rtdb, `songs/${id}/views`), (v) => (v || 0) + 1);
                 }
-            });
+            }, { onlyOnce: true });
         };
 
-        // Auto Play Next Song Logic
         document.getElementById('audio-player').onended = () => {
-            let currentIndex = songList.findIndex(s => s.id === currentSongId);
-            if (currentIndex !== -1 && currentIndex < songList.length - 1) {
-                playSong(songList[currentIndex + 1].id);
-            }
+            let idx = songList.findIndex(s => s.id === currentSongId);
+            if (idx !== -1 && idx < songList.length - 1) playSong(songList[idx + 1].id);
         };
 
-        // Like Logic
         window.handleLike = () => {
             if(!currentSongId) return;
             const uid = auth.currentUser.uid;
             const likeRef = ref(rtdb, `songs/${currentSongId}/likes/${uid}`);
-            
-            get(likeRef).then((snap) => {
-                if (snap.exists()) set(likeRef, null); // Unlike
-                else set(likeRef, true); // Like
+            get(likeRef).then(snap => {
+                if (snap.exists()) set(likeRef, null);
+                else set(likeRef, true);
             });
         };
-
     </script>
 </body>
 </html>
