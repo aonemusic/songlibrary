@@ -3,207 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A ONE MUSIC - Global Playlist</title>
+    <title>A ONE MUSIC - Advanced</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
     <script src="https://upload-widget.cloudinary.com/global/all.js" type="text/javascript"></script>
 
     <style>
-        :root {
-            --primary: #007bff;
-            --glass: rgba(255, 255, 255, 0.1);
-            --border: rgba(255, 255, 255, 0.2);
-            --success: #28a745;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            background: #0f0f12;
-            background-image: radial-gradient(circle at top right, #1a1a2e, #0f0f12);
-            color: white;
-            margin: 0;
-            padding: 20px;
-            text-align: center;
-            min-height: 100vh;
-        }
-
-        .upload-card {
-            background: var(--glass);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--border);
-            padding: 25px;
-            border-radius: 20px;
-            max-width: 450px;
-            margin: 0 auto 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .input-group { margin-bottom: 15px; text-align: left; }
-        .input-group label { font-size: 0.9em; color: #bbb; display: block; margin-bottom: 5px; }
-
-        input[type="text"] {
-            width: 100%; padding: 12px; border-radius: 8px; border: none;
-            background: rgba(255,255,255,0.05); color: white; box-sizing: border-box;
-            outline: none;
-        }
-
-        .btn {
-            background: var(--primary); color: white; border: none;
-            padding: 15px 25px; border-radius: 50px; font-weight: bold;
-            cursor: pointer; width: 100%; transition: 0.3s;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-        }
-
-        .btn-upload { background: var(--success); margin-top: 10px; }
-
+        :root { --primary: #007bff; --glass: rgba(255, 255, 255, 0.1); --border: rgba(255, 255, 255, 0.2); --success: #28a745; }
+        body { font-family: 'Poppins', sans-serif; background: #0f0f12; color: white; margin: 0; padding: 20px; text-align: center; }
+        .card { background: var(--glass); backdrop-filter: blur(15px); border: 1px solid var(--border); padding: 20px; border-radius: 15px; max-width: 400px; margin: 0 auto 20px; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: none; background: rgba(255,255,255,0.05); color: white; box-sizing: border-box; outline: none; }
+        .btn { background: var(--primary); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
+        .fab-btn { width: 50px; height: 50px; border-radius: 50%; background: var(--success); color: white; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        #upload-form { display: none; margin-top: 15px; }
         .container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
         .box { background: var(--glass); padding: 20px; border-radius: 15px; width: 350px; border: 1px solid var(--border); }
-        
-        .track-item {
-            display: flex; align-items: center; gap: 15px; padding: 12px;
-            border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s;
-        }
-        .track-item:hover { background: rgba(255,255,255,0.1); }
-        .track-item img { width: 45px; height: 45px; border-radius: 8px; object-fit: cover; }
-
-        #loading-songs { margin-bottom: 15px; display: none; color: var(--primary); font-weight: bold; }
-        .loader {
-            border: 3px solid #f3f3f3; border-top: 3px solid var(--primary);
-            border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite;
-            display: inline-block; vertical-align: middle; margin-right: 10px;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .track-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; position: relative; }
+        .track-item img { width: 50px; height: 50px; border-radius: 8px; object-fit: cover; }
+        .stats { font-size: 0.75em; color: #aaa; display: flex; gap: 10px; margin-top: 5px; }
+        .like-btn { cursor: pointer; transition: 0.2s; }
+        .like-btn.liked { color: #ff4d4d; }
+        .hidden { display: none; }
+        .upload-info { font-size: 0.8em; color: var(--success); margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
 
     <h1>A ONE MUSIC ✓</h1>
 
-    <div class="upload-card">
-        <h3><i class="fas fa-plus-circle"></i> Add Global Track</h3>
-        <div class="input-group">
-            <label>Song Title</label>
-            <input type="text" id="song-name-input" placeholder="Enter song name here...">
-        </div>
-        <button class="btn btn-upload" onclick="openUploadWidget()">
-            <i class="fas fa-upload"></i> Upload & Share
-        </button>
+    <div id="auth-section" class="card">
+        <h3>Login / Sign Up</h3>
+        <input type="text" id="auth-username" placeholder="Your Name">
+        <input type="email" id="auth-email" placeholder="Email">
+        <input type="password" id="auth-password" placeholder="Password">
+        <button class="btn" onclick="handleAuth()">Continue</button>
     </div>
 
-    <div id="loading-songs"><div class="loader"></div> Updating Playlist...</div>
-
-    <div class="container">
-        <div class="box">
-            <h3>Global Playlist 💿</h3>
-            <div id="track-list"></div>
+    <div id="app-content" class="hidden">
+        <div class="card" style="display:flex; justify-content: space-between; align-items: center; padding: 10px 20px;">
+            <b id="user-welcome"></b>
+            <button onclick="logout()" style="background:none; border:none; color:#ff4d4d; cursor:pointer;">Logout</button>
         </div>
 
-        <div class="box">
-            <img id="player-img" src="songlogo.jpg" style="width: 100%; border-radius: 15px;">
-            <h4 id="player-title" style="margin: 15px 0;">Select a song</h4>
-            <audio id="audio-player" controls style="width: 100%;"></audio>
-            <br>
-            <a id="download-btn" href="#" download style="display:none; color: var(--success); text-decoration: none; margin-top: 20px; display: block; font-weight: bold;">
-                <i class="fas fa-download"></i> Download MP3
-            </a>
-        </div>
-    </div>
-
-    <script>
-        let songs = [];
-        const cloudName = "dcsczlahu";
-        const uploadPreset = "ml_default";
-        const tag = "aone_music_global"; 
-
-        // 1. Fetch Songs and Clean Title Logic
-        async function fetchGlobalSongs() {
-            document.getElementById('loading-songs').style.display = "block";
-            const url = `https://res.cloudinary.com/${cloudName}/video/list/${tag}.json?t=${new Date().getTime()}`;
-
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-
-                songs = data.resources.map(file => {
-                    let songName = "Unnamed Track";
-                    
-                    // Priority 1: User Given Caption
-                    if (file.context && file.context.custom && file.context.custom.caption) {
-                        songName = file.context.custom.caption;
-                    } 
-                    // Priority 2: File Name without random IDs
-                    else {
-                        // Public ID-യുടെ അവസാനം വരുന്ന റാൻഡം 6 അക്ഷരങ്ങൾ ഒഴിവാക്കുന്നു
-                        songName = file.public_id.split('/').pop().replace(/[a-z0-9]{6}$/i, "").replace(/_/g, " ").trim();
-                        if(!songName) songName = "New Song";
-                    }
-
-                    return {
-                        title: songName,
-                        url: `https://res.cloudinary.com/${cloudName}/video/upload/v${file.version}/${file.public_id}.${file.format}`,
-                        img: "songlogo.jpg" 
-                    };
-                });
-                renderSongs();
-            } catch (error) {
-                console.error("Fetch Error:", error);
-                document.getElementById('track-list').innerHTML = "<p style='color:#ff4d4d'>Error: Please Uncheck 'Resource List' in Cloudinary Settings.</p>";
-            } finally {
-                document.getElementById('loading-songs').style.display = "none";
-            }
-        }
-
-        // 2. Render Songs
-        function renderSongs() {
-            const listDiv = document.getElementById('track-list');
-            listDiv.innerHTML = songs.length === 0 ? "Playlist is empty." : "";
-            songs.forEach((s, i) => {
-                listDiv.innerHTML += `
-                    <div class="track-item" onclick="playSong(${i})">
-                        <img src="${s.img}">
-                        <div style="text-align:left"><strong>${s.title}</strong><br><small style="color:#888">Global Track</small></div>
-                    </div>`;
-            });
-        }
-
-        // 3. Play Song
-        function playSong(i) {
-            const s = songs[i];
-            document.getElementById('player-title').innerText = s.title;
-            const audio = document.getElementById('audio-player');
-            audio.src = s.url;
-            audio.play();
+        <div style="margin-bottom: 30px;">
+            <button class="fab-btn" id="toggle-upload" onclick="toggleUploadForm()"><i class="fas fa-plus"></i></button>
             
-            const dl = document.getElementById('download-btn');
-            dl.href = s.url;
-            dl.style.display = "block";
-        }
+            <div id="upload-form" class="card">
+                <h4>Upload Song</h4>
+                <input type="text" id="song-name" placeholder="Song Name">
+                <input type="text" id="singer-name" placeholder="Singer Name">
+                <input type="text" id="song-logo" placeholder="Logo URL (or keep blank)">
+                
+                <p style="font-size: 0.8em; color: #bbb; margin: 10px 0;">Select your audio file below:</p>
+                <button class="btn" style="background: #555;" onclick="triggerCloudinary()">
+                    <i class="fas fa-file-audio"></i> Choose Music File
+                </button>
+                <div id="upload-status" class="upload-info">File ready for upload!</div>
+                
+                <button id="final-upload-btn" class="btn" style="background:var(--success); margin-top: 15px; display: none;" onclick="saveSongData()">
+                    Confirm & Publish
+                </button>
+            </div>
+        </div>
 
-        // 4. Upload Widget
-        function openUploadWidget() {
-            const songName = document.getElementById('song-name-input').value;
-            if (!songName) {
-                alert("Please type the Song Name first!");
-                return;
+        <div class="container">
+            <div class="box">
+                <h3>Global Playlist 💿</h3>
+                <div id="track-list"></div>
+            </div>
+
+            <div class="box">
+                <img id="player-img" src="songlogo.jpg" style="width: 100%; border-radius: 15px; max-height: 250px; object-fit: cover;">
+                <h4 id="player-title" style="margin: 15px 0 5px;">Select a song</h4>
+                <p id="player-artist" style="color: #bbb; font-size: 0.85em; margin-bottom: 15px;"></p>
+                <audio id="audio-player" controls style="width: 100%;"></audio>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getDatabase, ref, set, push, onValue, runTransaction } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAthFMO8zGT5BtiOkh4zkc71jL06LR_F9c",
+            authDomain: "a-one-chat-19ad6.firebaseapp.com",
+            databaseURL: "https://a-one-chat-19ad6-default-rtdb.firebaseio.com",
+            projectId: "a-one-chat-19ad6",
+            storageBucket: "a-one-chat-19ad6.firebasestorage.app",
+            messagingSenderId: "691783470864",
+            appId: "1:691783470864:web:0b119fcddf984af66e5f95"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const rtdb = getDatabase(app);
+
+        let tempUploadUrl = "";
+
+        // Auth
+        window.handleAuth = async () => {
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+            const name = document.getElementById('auth-username').value;
+            try {
+                const cred = await createUserWithEmailAndPassword(auth, email, password);
+                await updateProfile(cred.user, { displayName: name });
+            } catch (e) {
+                signInWithEmailAndPassword(auth, email, password).catch(err => alert(err.message));
             }
+        };
 
-            cloudinary.openUploadWidget({
-                cloudName: cloudName,
-                uploadPreset: uploadPreset,
-                tags: [tag],
-                context: { custom: { caption: songName } },
-                resourceType: 'video', 
-                multiple: false
-            }, (error, result) => {
-                if (!error && result.event === "success") {
-                    alert("Song Uploaded Successfully!");
-                    document.getElementById('song-name-input').value = "";
-                    setTimeout(fetchGlobalSongs, 3000); 
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('auth-section').classList.add('hidden');
+                document.getElementById('app-content').classList.remove('hidden');
+                document.getElementById('user-welcome').innerText = "Hi, " + user.displayName;
+                loadSongs();
+            } else {
+                document.getElementById('auth-section').classList.remove('hidden');
+                document.getElementById('app-content').classList.add('hidden');
+            }
+        });
+
+        window.logout = () => signOut(auth);
+
+        window.toggleUploadForm = () => {
+            const form = document.getElementById('upload-form');
+            form.style.display = form.style.display === "block" ? "none" : "block";
+        };
+
+        // Cloudinary Trigger
+        window.triggerCloudinary = () => {
+            cloudinary.openUploadWidget({ 
+                cloudName: "dcsczlahu", 
+                uploadPreset: "ml_default", 
+                resourceType: 'video' 
+            }, (err, res) => {
+                if (!err && res.event === "success") {
+                    tempUploadUrl = res.info.secure_url;
+                    document.getElementById('upload-status').style.display = "block";
+                    document.getElementById('final-upload-btn').style.display = "block";
                 }
             });
+        };
+
+        // Save Data to Firebase
+        window.saveSongData = () => {
+            const name = document.getElementById('song-name').value;
+            const artist = document.getElementById('singer-name').value;
+            const logo = document.getElementById('song-logo').value || 'songlogo.jpg';
+            
+            if(!name || !artist || !tempUploadUrl) return alert("Fill all details & select file!");
+
+            push(ref(rtdb, 'songs'), {
+                title: name, artist: artist, logo: logo, url: tempUploadUrl,
+                uploader: auth.currentUser.displayName, views: 0, likes: {}
+            }).then(() => {
+                alert("Published Successfully!");
+                location.reload();
+            });
+        };
+
+        function loadSongs() {
+            onValue(ref(rtdb, 'songs'), (snap) => {
+                const list = document.getElementById('track-list');
+                list.innerHTML = "";
+                snap.forEach((child) => {
+                    const song = child.val();
+                    const songId = child.key;
+                    const likesCount = song.likes ? Object.keys(song.likes).length : 0;
+                    const isLiked = song.likes && song.likes[auth.currentUser.uid];
+
+                    const item = document.createElement('div');
+                    item.className = 'track-item';
+                    item.innerHTML = `
+                        <img src="${song.logo}" onerror="this.src='songlogo.jpg'" onclick="playSong('${songId}')">
+                        <div style="text-align:left" onclick="playSong('${songId}')">
+                            <strong>${song.title}</strong><br>
+                            <small>${song.artist}</small>
+                            <div class="stats">
+                                <span><i class="fas fa-eye"></i> ${song.views || 0}</span>
+                                <span class="like-btn ${isLiked?'liked':''}" onclick="event.stopPropagation(); toggleLike('${songId}')">
+                                    <i class="fas fa-heart"></i> ${likesCount}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                    list.appendChild(item);
+                });
+            });
         }
 
-        window.onload = fetchGlobalSongs;
+        window.toggleLike = (id) => {
+            const uid = auth.currentUser.uid;
+            const likeRef = ref(rtdb, `songs/${id}/likes/${uid}`);
+            onValue(likeRef, (snap) => {
+                if (snap.exists()) set(likeRef, null);
+                else set(likeRef, true);
+            }, { onlyOnce: true });
+        };
+
+        window.playSong = (id) => {
+            onValue(ref(rtdb, `songs/${id}`), (snap) => {
+                const song = snap.val();
+                document.getElementById('player-title').innerText = song.title;
+                document.getElementById('player-artist').innerText = song.artist;
+                document.getElementById('player-img').src = song.logo;
+                const audio = document.getElementById('audio-player');
+                audio.src = song.url;
+                audio.play();
+                runTransaction(ref(rtdb, `songs/${id}/views`), (v) => (v || 0) + 1);
+            }, { onlyOnce: true });
+        };
     </script>
 </body>
 </html>
