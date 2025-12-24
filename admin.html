@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>A One Music - Admin Monitor</title>
+    <style>
+        body { background: #050505; color: #00f2ff; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .card { background: rgba(255,255,255,0.05); padding: 40px; border-radius: 20px; border: 1px solid #111; text-align: center; box-shadow: 0 10px 30px rgba(0,242,255,0.1); }
+        h1 { font-size: 6rem; margin: 10px 0; text-shadow: 0 0 20px rgba(0,242,255,0.5); }
+        p { color: #666; letter-spacing: 2px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <p>Live Active Users</p>
+        <h1 id="live-count">0</h1>
+        <p style="font-size: 0.8rem; margin-top: 20px;">A One Music Real-time Monitor</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+        const config = {
+            apiKey: "AIzaSyAthFMO8zGT5BtiOkh4zkc71jL06LR_F9c",
+            authDomain: "a-one-chat-19ad6.firebaseapp.com",
+            databaseURL: "https://a-one-chat-19ad6-default-rtdb.firebaseio.com",
+            projectId: "a-one-chat-19ad6"
+        };
+
+        const app = initializeApp(config);
+        const db = getDatabase(app);
+
+        // 'online_users' എന്ന പാത്തിലെ മാറ്റങ്ങൾ ശ്രദ്ധിക്കുന്നു
+        onValue(ref(db, 'online_users'), (snapshot) => {
+            if (snapshot.exists()) {
+                const count = Object.keys(snapshot.val()).length;
+                document.getElementById('live-count').innerText = count;
+            } else {
+                document.getElementById('live-count').innerText = "0";
+            }
+        });
+    </script>
+</body>
+</html>
